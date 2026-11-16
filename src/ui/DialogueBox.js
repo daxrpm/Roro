@@ -5,10 +5,10 @@ import { textStyle } from './textStyles.js';
 const CHARACTERS_PER_SECOND = 38;
 
 /**
- * Dialogue box with portrait, speaker name and text revealed letter by letter.
+ * Cuadro de dialogo con retrato, nombre y texto revelado letra por letra.
  *
- * Dialogues are non-skippable: the reveal cannot be fast-forwarded and the
- * player can only continue once the whole line is visible.
+ * No se puede acelerar la aparicion; solo se permite continuar cuando toda la
+ * linea es visible.
  */
 export class DialogueBox {
     constructor(scene) {
@@ -54,14 +54,14 @@ export class DialogueBox {
         this.portrait.setTexture(speaker.portraitKey);
         const isFallback = Boolean(this.portrait.texture.customData?.isFallback);
         if (isFallback) {
-            // No portrait file yet: show the head and torso of the character sprite at 2x.
+            // Sin retrato definitivo: muestra cabeza y torso del personaje a escala 2.
             const visibleHeight = Math.min(this.portrait.height, Math.floor((this.portraitSize - 8) / 2));
             this.portrait.setScale(2).setCrop(0, 0, this.portrait.width, visibleHeight);
-            // The origin (bottom) still refers to the full frame, so place the
-            // frame's bottom so that its cropped top sits inside the box.
+            // El origen inferior aun corresponde al cuadro completo; se ajusta su base
+            // para que el borde superior del recorte quede dentro del marco.
             this.portrait.setY(this.portraitTop + 4 + this.portrait.height * 2);
         } else {
-            // Real portrait: fit it inside the frame, using whole pixels where possible.
+            // Ajusta el retrato real al marco usando pixeles enteros cuando es posible.
             const scale = Math.min((this.portraitSize - 8) / this.portrait.width, (this.portraitSize - 8) / this.portrait.height);
             this.portrait.setCrop().setScale(scale >= 1 ? Math.floor(scale) : scale);
             this.portrait.setY(this.portraitTop + this.portraitSize - 4);

@@ -7,13 +7,13 @@ import { DialogueBox } from '../ui/DialogueBox.js';
 import { TEXT_STYLES } from '../ui/textStyles.js';
 
 /**
- * Interview screen, shown on top of the paused apartment and visually
- * separated from it. Lines come from dialogueData.js and are fixed, linear
- * and non-skippable: each line must be fully revealed before continuing,
- * and there are no choices.
+ * Pantalla de entrevista superpuesta al departamento pausado. Las lineas de
+ * dialogueData.js son fijas y lineales: deben revelarse completas antes de avanzar
+ * y no ofrecen elecciones.
  *
- * When the last line is read, the apartment scene is resumed with
- * `{ interviewCompleted: true }`.
+ * Al terminar la ultima linea reanuda ApartmentScene con { interviewCompleted:
+ * true }.
+ *
  */
 export class DialogueScene extends Phaser.Scene {
     constructor() {
@@ -31,7 +31,7 @@ export class DialogueScene extends Phaser.Scene {
         this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0x07060c, 0.94).setOrigin(0, 0);
         this.add.text(GAME_WIDTH / 2, 48, t(this.interview.title).toUpperCase(), TEXT_STYLES.heading).setOrigin(0.5);
 
-        // Both characters face each other above the dialogue box.
+        // Ambos personajes se miran sobre el cuadro de dialogo.
         this.add.image(GAME_WIDTH / 2 - 150, 300, SPEAKERS.roro.portraitKey).setScale(2).setOrigin(0.5, 1);
         this.add.image(GAME_WIDTH / 2 + 150, 300, SPEAKERS.detective.portraitKey).setScale(2).setOrigin(0.5, 1).setTint(0xb8c4ff);
         this.add.rectangle(GAME_WIDTH / 2, 302, 420, 4, COLORS.panelBorder);
@@ -53,7 +53,7 @@ export class DialogueScene extends Phaser.Scene {
     }
 
     advance() {
-        // Non-skippable: ignore input until the current line is fully shown.
+        // No se puede adelantar: ignora entrada hasta mostrar toda la linea actual.
         if (!this.finished && this.dialogueBox.isComplete) {
             this.showNextLine();
         }

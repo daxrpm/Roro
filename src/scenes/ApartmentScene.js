@@ -52,14 +52,14 @@ const VISIT_START_DELAY = 1200;
 const END_SCREEN_DELAY = 2400;
 
 /**
- * Main gameplay scene: the apartment.
+ * Escena principal del departamento.
+ * Conecta sistemas; las reglas viven en gestores, FSM y objetos:
+ * ApartmentLayout -> ApartmentRenderer (dibujo) / CollisionManager (fisica)
+ * ApartmentLayout -> NavigationManager (A*) -> Detective <- DetectiveStateMachine
+ * EvidenceManager (estados y puntaje) <- EvidenceItem / HidingSpot <-
+ * InteractionManager
  *
- * This scene only wires systems together; the rules live in the managers,
- * the detective FSM and the game objects:
- *   ApartmentLayout ─▶ ApartmentRenderer (graphics) / CollisionManager (physics)
- *                    ─▶ NavigationManager (A*) ─▶ Detective ◀─ DetectiveStateMachine
- *   EvidenceManager (states & score) ◀─ EvidenceItem / HidingSpot ◀─ InteractionManager
- *   HUD, VisibilityOverlay, NoteInterface (presentation)
+ * HUD, VisibilityOverlay y NoteInterface presentan la informacion.
  */
 export class ApartmentScene extends Phaser.Scene {
     constructor() {
@@ -95,7 +95,7 @@ export class ApartmentScene extends Phaser.Scene {
         this.time.delayedCall(VISIT_START_DELAY, () => this.detectiveAI.start());
     }
 
-    // ================================================================= setup
+    // ================================================================= preparacion
 
     createDoors() {
         this.doors = new Map();
@@ -105,7 +105,7 @@ export class ApartmentScene extends Phaser.Scene {
         }
     }
 
-    /** True when Roro's or the detective's body overlaps a world rectangle. */
+    /** Indica si el cuerpo de Roro o del detective se superpone a un rectangulo del mundo. */
     isRectOccupied(rect) {
         return [this.roro, this.detective].some((character) => {
             if (!character?.body) {
@@ -265,8 +265,8 @@ export class ApartmentScene extends Phaser.Scene {
     setupCamera() {
         const { width, height } = this.layout.getWorldSize();
         const camera = this.cameras.main;
-        // When the apartment is narrower than the screen, centre it; leave a
-        // margin above and below so walls are not hidden under the HUD.
+        // Centra el departamento si es mas estrecho que la pantalla; deja
+        // margen arriba y abajo para que el HUD no cubra las paredes.
         const boundsWidth = Math.max(width, GAME_WIDTH);
         const boundsHeight = Math.max(height + 80, GAME_HEIGHT);
         camera.setBounds((width - boundsWidth) / 2, -40, boundsWidth, boundsHeight);
@@ -275,7 +275,7 @@ export class ApartmentScene extends Phaser.Scene {
         camera.setBackgroundColor(COLORS.backgroundCss);
     }
 
-    // ================================================================ update
+    // ================================================================ avance
 
     update(time, delta) {
         if (this.gameOver) {
@@ -294,7 +294,7 @@ export class ApartmentScene extends Phaser.Scene {
         this.detective.update(delta);
         this.detectiveAI.update(delta);
         if (this.gameOver) {
-            // The detective just caught Roro or left: stop updating the world.
+            // El detective resolvio el caso o salio; se detiene la actualizacion del mundo.
             return;
         }
         this.distractions.forEach((source) => source.update(delta));
@@ -310,7 +310,7 @@ export class ApartmentScene extends Phaser.Scene {
         const position = this.detective.getFootPosition();
         const location = this.roomTriggers.getLocation(this.detective);
         const outside = location.roomId && this.layout.getRoom(location.roomId)?.outside;
-        // In Easy mode the detective is always shown, even on the porch.
+        // En Facil siempre se muestra al detective, incluso en el porche.
         if (outside && this.visibility.mode !== VISIBILITY_MODE.FULL) {
             return false;
         }
@@ -331,7 +331,7 @@ export class ApartmentScene extends Phaser.Scene {
         this.hud.setPhase(labels[state] ?? searchText);
     }
 
-    // ============================================================ interaction
+    // ============================================================ interaccion
 
     onEvidenceAction(result) {
         if (!result.ok) {
@@ -372,7 +372,7 @@ export class ApartmentScene extends Phaser.Scene {
         });
     }
 
-    /** Freezes physics and animations while a modal interface is open. */
+    /** Detiene fisica y animaciones mientras una interfaz modal esta abierta. */
     setWorldSuspended(suspended) {
         if (suspended) {
             this.physics.pause();
@@ -392,7 +392,7 @@ export class ApartmentScene extends Phaser.Scene {
         this.hud.showMessage(redirected ? t(source.definition.noiseText) : t("{noise} Nobody comes to check.", { noise: t(source.definition.noiseText) }));
     }
 
-    // ======================================================== scene changes
+    // ======================================================== cambios de escena
 
     pauseGame() {
         this.roro.setControlsEnabled(false);

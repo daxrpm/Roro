@@ -1,22 +1,22 @@
 /**
- * Base class for everything Roro can interact with using E.
+ * Clase base de los objetos con los que Roro interactua con E.
  *
- * Subclasses override `isAvailable`, `getPrompt` and `interact`. The
- * InteractionManager selects the closest available object within range and
- * calls these methods, so evidence, hiding places, doors, the note and
- * distractions all share one interaction flow.
+ * Las subclases implementan isAvailable, getPrompt e interact. InteractionManager
+ * elige el disponible mas cercano dentro del rango y usa ese contrato para
+ * evidencias, escondites, puertas, nota y distracciones.
  *
- * The `context` argument passed to every method gives access to the game
- * services (evidence manager, UI, audio...) without hard dependencies.
+ * context entrega servicios como evidencias, interfaz y audio sin dependencias
+ * directas.
  *
- * No Phaser import: visuals are attached through `onFocusChange`.
+ * No importa Phaser; el dibujo se enlaza mediante onFocusChange.
+ *
  */
 export class InteractiveObject {
     /**
      * @param {object} config
      * @param {string} config.id
-     * @param {{x:number,y:number}} config.position interaction point (world px)
-     * @param {number} [config.range] override of the default interaction range
+     * @param {{x:number,y:number}} config.position punto de interaccion en pixeles del mundo
+     * @param {number} [config.range] rango personalizado en lugar del predeterminado
      */
     constructor({ id, position, range = null }) {
         this.id = id;
@@ -26,21 +26,21 @@ export class InteractiveObject {
         this.onFocusChange = null;
     }
 
-    /** Whether the object currently accepts interaction. */
+    /** Indica si el objeto acepta interaccion en este momento. */
     // eslint-disable-next-line no-unused-vars
     isAvailable(context) {
         return true;
     }
 
-    /** Text displayed in the interaction prompt. */
+    /** Texto mostrado en el aviso de interaccion. */
     // eslint-disable-next-line no-unused-vars
     getPrompt(context) {
         return 'Interact';
     }
 
     /**
-     * Whether pressing E does something right now. A prompt can be shown for
-     * information ("Your hands are full") while the action is disabled.
+     * Indica si pulsar E ejecuta una accion ahora. El aviso puede informar que las
+     * manos estan llenas aunque la accion este deshabilitada.
      */
     // eslint-disable-next-line no-unused-vars
     canInteract(context) {

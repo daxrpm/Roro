@@ -7,9 +7,9 @@ import { textStyle } from '../ui/textStyles.js';
 import { fadeIn, fadeToScene } from './sceneTransitions.js';
 
 /**
- * Story introduction (text from dialogueData.js): the blackouts, the routine,
- * and the police knocking on the door. Each line fades in; the player
- * advances with E / Space / Enter / click once the line is shown.
+ * Introduccion con textos de dialogueData.js: desmayos, rutina y golpes de la
+ * policia en la puerta. Cada fragmento aparece gradualmente; despues se avanza con
+ * E, Espacio, Enter o clic.
  */
 export class IntroductionScene extends Phaser.Scene {
     constructor() {

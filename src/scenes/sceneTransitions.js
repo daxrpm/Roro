@@ -1,5 +1,5 @@
 /**
- * Fade-out / fade-in helpers shared by all scenes.
+ * Funciones de aparicion y desvanecimiento compartidas por las escenas.
  */
 const FADE_DURATION = 300;
 
@@ -7,7 +7,7 @@ export function fadeIn(scene, duration = FADE_DURATION) {
     scene.cameras.main.fadeIn(duration, 0, 0, 0);
 }
 
-/** Fades the camera to black, then starts `key`. Ignores repeated calls. */
+/** Desvanece la camara a negro e inicia key; ignora llamadas repetidas. */
 export function fadeToScene(scene, key, data = {}, duration = FADE_DURATION) {
     if (scene.isTransitioning) {
         return;

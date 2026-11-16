@@ -2,8 +2,8 @@ import { t } from '../managers/LanguageManager.js';
 import { STORY } from './gameConfig.js';
 
 /**
- * All narrative text. Dialogues are fixed, linear and non-branching.
- * `{victimName}` is replaced with STORY.victimFullName at runtime.
+ * Contenido narrativo. Los dialogos son fijos, lineales y sin ramificaciones.
+ * {victimName} se reemplaza por STORY.victimFullName durante la ejecucion.
  */
 
 export const SPEAKERS = Object.freeze({
@@ -19,7 +19,7 @@ export const SPEAKERS = Object.freeze({
     }
 });
 
-/** Lines shown by IntroductionScene, in order. */
+/** Lineas mostradas por IntroductionScene en su orden de aparicion. */
 export const INTRODUCTION = [
     { text: `For ${STORY.monthsWithBlackouts} months, Roro has been waking up with no memory of the night before.` },
     { text: 'Every month there is something new.\nBloodied clothes. Things that belong to strangers. A weapon.\nA note with a name on it.' },
@@ -32,8 +32,8 @@ export const INTRODUCTION = [
 ];
 
 /**
- * Three interviews, one after each of the first three inspection routes.
- * 1. The murder weapon.  2. The victim's belongings.  3. The victim's name.
+ * Tres entrevistas, una tras cada una de las tres primeras rondas:
+ * 1. El arma. 2. Las pertenencias de la victima. 3. El nombre de la victima.
  */
 export const INTERVIEWS = [
     {
@@ -71,7 +71,7 @@ export const INTERVIEWS = [
     }
 ];
 
-/** Replaces story placeholders such as {victimName} in a text. */
+/** Sustituye marcadores narrativos como {victimName} dentro de un texto. */
 export function formatStoryText(text) {
     return t(text).replaceAll('{victimName}', STORY.victimFullName);
 }

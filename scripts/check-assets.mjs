@@ -1,10 +1,10 @@
 /**
- * Prints which assets declared in src/data/assetManifest.js exist in public/.
+ * Muestra que recursos de src/data/assetManifest.js existen en public/.
  *
- * Run with: npm run check-assets
+ * Ejecutar: npm run check-assets.
  *
- * Exit code 1 if a REQUIRED asset is missing. Missing optional assets only
- * produce a warning because the game uses placeholders / silence for them.
+ * Termina con codigo 1 si falta una imagen REQUIRED. Los opcionales ausentes solo
+ * generan aviso porque se usan sustitutos o silencio.
  */
 import { existsSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';

@@ -7,8 +7,8 @@ import { VolumeSlider } from '../ui/VolumeSlider.js';
 import { TEXT_STYLES, textStyle } from '../ui/textStyles.js';
 
 /**
- * Pause menu shown over the paused ApartmentScene (which stops updating,
- * including physics, timers and the detective FSM).
+ * Menu sobre ApartmentScene pausada: no avanzan la fisica, temporizadores ni
+ * maquina de estados del detective.
  */
 export class PauseScene extends Phaser.Scene {
     constructor() {
@@ -54,7 +54,7 @@ export class PauseScene extends Phaser.Scene {
     }
 
     restartGame() {
-        // Restarting the paused scene re-creates the apartment from scratch.
+        // Reiniciar la escena pausada reconstruye el departamento desde cero.
         this.scene.stop(SCENE_KEYS.APARTMENT);
         this.scene.start(SCENE_KEYS.APARTMENT);
     }

@@ -9,16 +9,16 @@ export const DISTRACTION_STATE = Object.freeze({
 });
 
 /**
- * An object that makes a noise to redirect the detective (e.g. the kettle).
+ * Objeto que emite ruido para redirigir al detective, como la tetera.
+ * READY --E--> ARMED --triggerDelay--> ruido y aviso al detective --> COOLDOWN
+ * --cooldown--> READY
  *
- * READY --E--> ARMED --triggerDelay--> noise (detective notified) --> COOLDOWN --cooldown--> READY
- *
- * Timers advance in `update(delta)` so they stop while the game is paused.
+ * Los temporizadores avanzan con update(delta) y se detienen durante la pausa.
  */
 export class DistractionSource extends InteractiveObject {
     /**
-     * @param {object} definition entry of DISTRACTIONS (apartmentData.js)
-     * @param {{position:{x,y}, investigatePosition:{x,y}}} world positions in pixels
+     * @param {object} definition entrada de DISTRACTIONS (apartmentData.js)
+     * @param {{position:{x,y}, investigatePosition:{x,y}}} world posiciones en pixeles
      * @param {(source: DistractionSource) => void} onNoise
      */
     constructor(definition, { position, investigatePosition }, onNoise) {

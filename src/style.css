@@ -16,7 +16,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Prevent scrolling / zooming gestures from interfering with touch controls. */
+    /* Evita que desplazamiento o zoom de la pagina interfieran con controles tactiles. */
     touch-action: none;
     -webkit-user-select: none;
     user-select: none;
@@ -28,7 +28,7 @@ body {
 }
 
 #game canvas {
-    /* Keep pixel art sharp when the canvas is scaled to the window. */
+    /* Mantiene nitido el pixel art al adaptar el canvas a la ventana. */
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }

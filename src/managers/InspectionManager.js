@@ -6,15 +6,15 @@ export const INSPECTION_POINT_KIND = Object.freeze({
 });
 
 /**
- * Builds and tracks the detective's inspection routes.
+ * Construye y conserva las rutas de inspeccion del detective.
  *
- * A route's points are fixed by data (hiding places of the route category,
- * plus room sweeps for the first route). Only their ORDER is randomised:
- * rooms are shuffled, then the points within each room are shuffled. Every
- * point is checked for reachability before the route starts, so the order
- * can change but the route always stays valid.
+ * Los datos fijan puntos por categoria y barridos de la primera ronda. Solo se
+ * aleatoriza el ORDEN: primero habitaciones y despues sus puntos. Cada punto se
+ * valida como alcanzable antes de iniciar la ronda, de modo que el orden cambia
+ * conservando rutas validas.
  *
- * Pure logic (no Phaser) so it can be tested in Node.
+ * Logica independiente de Phaser para probarla en Node.
+ *
  */
 export class InspectionManager {
     /**
@@ -24,7 +24,7 @@ export class InspectionManager {
      * @param {Array<import('../objects/HidingSpot.js').HidingSpot>} config.hidingSpots
      * @param {import('../world/ApartmentLayout.js').ApartmentLayout} config.layout
      * @param {import('../physics/NavigationManager.js').NavigationManager} config.navigation
-     * @param {{x:number,y:number}} config.originTile tile used for reachability checks
+     * @param {{x:number,y:number}} config.originTile tile de origen para comprobar accesibilidad
      * @param {Function} [config.random]
      */
     constructor({ routes, sweepPoints, hidingSpots, layout, navigation, originTile, random = Math.random }) {
@@ -42,7 +42,7 @@ export class InspectionManager {
         this.skippedPoints = [];
     }
 
-    /** All candidate points of a route, before ordering. */
+    /** Puntos candidatos de una ruta antes de ordenarlos. */
     collectRoutePoints(route) {
         const points = this.hidingSpots
             .filter((spot) => spot.category === route.category)
@@ -75,7 +75,7 @@ export class InspectionManager {
         return points;
     }
 
-    /** Groups points by room, shuffles the rooms and the points inside each room. */
+    /** Agrupa puntos por habitacion y baraja tanto habitaciones como puntos internos. */
     orderPoints(points) {
         const byRoom = new Map();
         for (const point of points) {
@@ -118,7 +118,7 @@ export class InspectionManager {
         return this.points[this.pointIndex] ?? null;
     }
 
-    /** Marks the current point as searched and moves to the next one. */
+    /** Marca el punto actual como inspeccionado y avanza al siguiente. */
     completeCurrentPoint() {
         const point = this.getCurrentPoint();
         point?.hidingSpot?.markInspected();

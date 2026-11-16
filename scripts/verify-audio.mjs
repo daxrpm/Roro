@@ -69,7 +69,7 @@ for (const asset of AUDIO_ASSETS.filter(entry => entry.type === 'sfx')) {
     for (let i = 44; i < wav.length; i += 2) peak = Math.max(peak, Math.abs(wav.readInt16LE(i)));
     assert.ok(peak > 0 && peak < 32767, 'Audio is non-silent and does not clip');
 }
-// The whistle fires once, after heating, and does not repeat during cooldown.
+// El silbido se emite una vez tras calentar y no se repite durante la espera.
 const { DistractionSource } = await import('../src/objects/DistractionSource.js');
 const { DISTRACTION_CONFIG } = await import('../src/data/gameConfig.js');
 const kettle = new DistractionSource({ id: 'kettle', name: 'kettle', room: 'kitchen' },

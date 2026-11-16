@@ -2,14 +2,14 @@ import { DETECTIVE_CONFIG, FONT_FAMILY } from '../data/gameConfig.js';
 import { Character } from './Character.js';
 
 /**
- * The detective's body: path following, door handling, animation and
- * footsteps. All decisions (where to go, when to search) are made by
- * DetectiveStateMachine, which talks to this class through:
- *   navigateTo, stop, getPosition, setSpeedMultiplier, faceTowards, setSearching
+ * Cuerpo del detective: seguimiento de ruta, puertas, animacion y pasos.
+ * DetectiveStateMachine decide destino y momento de buscar mediante:
  *
- * Navigation never sets a straight velocity towards the final target: the
- * detective follows A* waypoints computed on the walkability grid, so he
- * goes around walls and furniture and through doorways.
+ * navigateTo, stop, getPosition, setSpeedMultiplier, faceTowards y setSearching.
+ *
+ * El movimiento no apunta directamente al destino final: sigue puntos A* de la
+ * grilla transitable para rodear paredes y muebles y atravesar puertas.
+ *
  */
 export class Detective extends Character {
     /**
@@ -36,7 +36,7 @@ export class Detective extends Character {
         this.stuckTimer = 0;
         this.lastDistance = Infinity;
         this.isSearching = false;
-        // False when the visibility rules hide the detective from the player.
+        // Es false cuando las reglas de visibilidad ocultan al detective al jugador.
         this.visibleToPlayer = true;
 
         this.searchIndicator = scene.add.text(0, 0, '?', {
@@ -49,7 +49,7 @@ export class Detective extends Character {
         this.searchTween = null;
     }
 
-    // ------------------------------------------------ FSM movement interface
+    // ------------------------------------------------ interfaz de movimiento FSM
 
     getPosition() {
         return this.getFootPosition();
@@ -60,8 +60,8 @@ export class Detective extends Character {
     }
 
     /**
-     * Computes a path and starts following it. Replaces any previous
-     * navigation request (its callbacks are dropped).
+     * Calcula una ruta y empieza a seguirla. Reemplaza cualquier solicitud previa de
+     * navegacion y descarta sus callbacks.
      */
     navigateTo(target, { onArrive, onFail } = {}) {
         this.target = { x: target.x, y: target.y };
@@ -73,7 +73,7 @@ export class Detective extends Character {
     computePath() {
         const path = this.navigation.findWorldPath(this.getFootPosition(), this.target);
         if (!path) {
-            // Destination temporarily unavailable: wait and try again.
+            // Destino temporalmente inaccesible: espera y vuelve a intentarlo.
             this.path = [];
             this.retryCount += 1;
             this.retryTimer = DETECTIVE_CONFIG.retryDelay;
@@ -114,7 +114,7 @@ export class Detective extends Character {
         }
     }
 
-    /** Shows or hides the detective (Normal / Hard visibility rules). */
+    /** Muestra u oculta al detective segun la visibilidad de Normal o Dificil. */
     setVisibleToPlayer(visible) {
         if (visible === this.visibleToPlayer) {
             return;
@@ -124,7 +124,7 @@ export class Detective extends Character {
         this.searchIndicator.setVisible(this.isSearching && visible);
     }
 
-    // ---------------------------------------------------------------- update
+    // ---------------------------------------------------------------- avance
 
     update(delta) {
         this.followPath(delta);
@@ -177,7 +177,7 @@ export class Detective extends Character {
         }
 
         const speed = DETECTIVE_CONFIG.speed * this.speedMultiplier;
-        // Do not overshoot the waypoint in a single physics step.
+        // Limita el movimiento para no sobrepasar el punto en un solo paso fisico.
         const stepSpeed = Math.min(speed, distance / Math.max(delta / 1000, 0.001));
         const velocityX = (dx / distance) * stepSpeed;
         const velocityY = (dy / distance) * stepSpeed;
@@ -187,8 +187,8 @@ export class Detective extends Character {
     }
 
     /**
-     * If the next few pixels of the path cross a closed door, stop and open
-     * it, then wait briefly before continuing.
+     * Si los siguientes pixeles de la ruta cruzan una puerta cerrada, se detiene, la
+     * abre y espera brevemente antes de continuar.
      */
     openDoorAhead(position, directionX, directionY) {
         const lookAhead = 14;
@@ -204,7 +204,7 @@ export class Detective extends Character {
         return false;
     }
 
-    /** Recalculates the path if the detective stops making progress. */
+    /** Recalcula la ruta cuando el detective deja de avanzar. */
     detectStuck(delta, distance) {
         if (distance < this.lastDistance - 0.5) {
             this.lastDistance = distance;

@@ -1,16 +1,16 @@
 /**
- * Central game configuration.
+ * Configuracion central del juego.
  *
- * Every tunable value (resolution, speeds, timings, difficulty settings,
- * story constants) lives here so gameplay code never hardcodes them.
+ * Reune parametros ajustables: resolucion, velocidades, tiempos, dificultad y
+ * constantes narrativas, para que la logica pueda consultarlos sin repetirlos.
  */
 
-// Internal rendering resolution. Phaser scales this to the browser window.
+// Resolucion interna de dibujo. Phaser la adapta a la ventana del navegador.
 export const GAME_WIDTH = 960;
 export const GAME_HEIGHT = 540;
 
-// The interior tileset uses 16x16 source tiles. Everything in the world is
-// drawn at an integer scale of 2, so one world tile is 32x32 pixels.
+// El tileset interior usa cuadros originales de 16 x 16. El mundo se dibuja
+// con escala entera 2; cada tile del mundo mide 32 x 32 pixeles.
 export const TILE_SOURCE_SIZE = 16;
 export const WORLD_SCALE = 2;
 export const TILE_SIZE = TILE_SOURCE_SIZE * WORLD_SCALE;
@@ -41,8 +41,8 @@ export const VISIBILITY_MODE = Object.freeze({
 });
 
 /**
- * Difficulty changes visibility and evidence needed to solve the case. The detective behaves the
- * same in every mode, as defined in GAME_DESIGN.md (section 11).
+ * La dificultad cambia la visibilidad y las evidencias necesarias para resolver el caso. El
+ * comportamiento del detective es el mismo en todos los modos (GAME_DESIGN.md, seccion 11).
  */
 export const DIFFICULTY_SETTINGS = Object.freeze({
     [DIFFICULTY.EASY]: {
@@ -56,7 +56,7 @@ export const DIFFICULTY_SETTINGS = Object.freeze({
         evidenceToSolve: 2,
         description: 'Only the room you are in is visible.\nListen for the detective\'s footsteps.',
         visibility: VISIBILITY_MODE.ROOM,
-        // Darkness applied to the rooms Roro is not in (0 = none, 1 = black).
+        // Oscuridad de las habitaciones donde no esta Roro: 0 = ninguna, 1 = negro.
         obscuredAlpha: 0.93
     },
     [DIFFICULTY.HARD]: {
@@ -65,7 +65,7 @@ export const DIFFICULTY_SETTINGS = Object.freeze({
         description: 'You only see a small circle around Roro.\nListen for the detective\'s footsteps.',
         visibility: VISIBILITY_MODE.RADIUS,
         obscuredAlpha: 0.985,
-        // Radius of the visible circle around Roro, in world pixels.
+        // Radio del circulo visible alrededor de Roro, en pixeles del mundo.
         visibilityRadius: 110
     }
 });
@@ -78,10 +78,10 @@ export const SCORE_CONFIG = Object.freeze({
 
 export const PLAYER_CONFIG = Object.freeze({
     speed: 110,
-    // Small physics body at the character's feet (world pixels).
+    // Cuerpo fisico pequeno en los pies del personaje, en pixeles del mundo.
     bodyWidth: 16,
     bodyHeight: 8,
-    // Maximum distance between Roro's feet and an interaction point.
+    // Distancia maxima entre los pies de Roro y el punto de interaccion.
     interactionRange: 40,
     footstepInterval: 330
 });
@@ -90,54 +90,54 @@ export const DETECTIVE_CONFIG = Object.freeze({
     speed: 58,
     bodyWidth: 16,
     bodyHeight: 8,
-    // Distance (px) at which a waypoint is considered reached.
+    // Distancia en pixeles a la que se considera alcanzado un punto de ruta.
     arriveThreshold: 3,
-    // Time the detective spends looking around after entering (ms).
+    // Tiempo en ms que el detective observa al terminar de entrar.
     entryPause: 5000,
-    // Time spent opening a closed door before walking through it (ms).
+    // Tiempo en ms para abrir una puerta cerrada antes de atravesarla.
     doorOpenDelay: 450,
-    // Distance from Roro at which an interview starts (px).
+    // Distancia a Roro, en pixeles, a la que comienza una entrevista.
     interviewDistance: 44,
-    // How often the path towards a moving target (Roro) is recalculated (ms).
+    // Intervalo en ms para recalcular la ruta hacia un objetivo movil como Roro.
     chaseRepathInterval: 600,
-    // If no progress is made for this long, the path is recalculated (ms).
+    // Tiempo sin avance en ms que provoca un nuevo calculo de ruta.
     stuckTimeout: 1500,
-    // Retries before an unreachable destination is skipped.
+    // Reintentos antes de omitir un destino inaccesible.
     maxPathRetries: 4,
     retryDelay: 500,
-    // If Roro cannot be reached for this long, the interview starts anyway (ms).
+    // Tras esta espera en ms sin alcanzar a Roro, la entrevista inicia de todos modos.
     interviewFallbackTimeout: 6000,
     footstepInterval: 420,
-    // Footsteps are inaudible beyond this distance from Roro (px).
+    // Los pasos dejan de oirse mas alla de esta distancia de Roro, en pixeles.
     footstepHearingDistance: 96
 });
 
 /**
- * Rules that decide how evidence can be hidden and found.
- * See README "Design decisions" for the reasoning behind these defaults.
+ * Reglas para esconder y descubrir evidencias. README explica los valores
+ * predeterminados en la seccion de decisiones de diseno.
  */
 export const HIDING_RULES = Object.freeze({
-    // Roro carries at most one evidence object at a time.
+    // Roro lleva como maximo una evidencia a la vez.
     carryLimit: 1,
-    // Each hiding place stores at most this many evidence objects.
+    // Cantidad maxima de evidencias que admite cada escondite.
     hidingSpotCapacity: 1,
-    // Roro may take an object back out of a hiding place (score decreases by 1).
+    // Roro puede recuperar un objeto oculto; el puntaje disminuye en uno.
     allowRetrieval: true
 });
 
 export const DISTRACTION_CONFIG = Object.freeze({
-    // Delay between switching the kettle on and the whistle (ms).
+    // Espera en ms entre activar la tetera y emitir el silbido.
     triggerDelay: 2000,
-    // Time the detective spends at the distraction before returning (ms).
+    // Tiempo en ms que el detective investiga la distraccion antes de regresar.
     investigateDuration: 4000,
-    // Time before the same distraction can be used again (ms).
+    // Tiempo en ms antes de poder reutilizar la misma distraccion.
     cooldown: 30000
 });
 
 export const STORY = Object.freeze({
     playerName: 'Roro',
     detectiveName: 'Detective',
-    // Displayed on the victim's note and revealed in the third interview.
+    // Se muestra en la nota y se revela en la tercera entrevista.
     victimFullName: 'Daniel Ortega Vidal',
     monthsWithBlackouts: 6
 });
@@ -171,15 +171,15 @@ export const COLORS = Object.freeze({
 });
 
 /**
- * Placeholder graphics for assets that do not exist yet are drawn with this
- * outline colour so they are easy to identify in screenshots.
+ * Las figuras provisionales de recursos ausentes usan este color de contorno para
+ * identificarlas facilmente en capturas.
  */
 export const PLACEHOLDER_STYLE = Object.freeze({
     showOutline: true,
     outlineColor: 0xff00ff
 });
 
-// Depth layers. Characters and furniture use their bottom y coordinate.
+// Capas de profundidad. Personajes y muebles usan su coordenada y inferior.
 export const DEPTH = Object.freeze({
     floor: 0,
     walls: 1,

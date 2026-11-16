@@ -25,7 +25,7 @@ const INSTRUCTIONS = [
     'Fewer objects left means faster music and stronger red edges.'
 ];
 
-/** Title screen: start, instructions, sound toggle and saved records. */
+/** Menu principal: inicio, instrucciones, sonido y records guardados. */
 export class MainMenuScene extends Phaser.Scene {
     constructor() {
         super(SCENE_KEYS.MAIN_MENU);
@@ -72,7 +72,7 @@ export class MainMenuScene extends Phaser.Scene {
         const close = this.add.text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 186, t('Press ESC, Enter or click to close'), textStyle({ color: COLORS.textMuted })).setOrigin(0.5);
         this.instructions = this.add.container(0, 0, [panel, title, body, close]).setDepth(10).setVisible(false);
         panel.setInteractive().on('pointerdown', () => this.toggleInstructions(false));
-        // The key press that opened the panel must not close it again.
+        // La pulsacion que abrio el panel no debe volver a cerrarlo.
         const closeHandler = () => {
             if (this.instructions.visible && this.time.now - this.instructionsOpenedAt > 150) {
                 this.time.delayedCall(0, () => this.toggleInstructions(false));
@@ -85,7 +85,7 @@ export class MainMenuScene extends Phaser.Scene {
     toggleInstructions(visible) {
         this.instructionsOpenedAt = this.time.now;
         this.instructions.setVisible(visible);
-        // Disable the menu buttons while the panel is open.
+        // Deshabilita los botones del menu mientras el panel esta abierto.
         this.menu.buttons.forEach((button) => button.setVisible(!visible));
         this.menu.enabled = !visible;
     }

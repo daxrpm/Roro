@@ -13,14 +13,14 @@ export const DETECTIVE_STATE = Object.freeze({
 });
 
 /**
- * Transition table. A transition not listed here is rejected and logged.
- *
- *   WAITING ──start──▶ ENTERING ──entry pause over──▶ INSPECTING
- *   INSPECTING ──route done (routes 1-3)──▶ INTERVIEWING ──dialogue over──▶ INSPECTING (next route)
- *   INSPECTING ──route 4 done──▶ FINISHED
- *   INSPECTING ──case solved──▶ CAUGHT
- *   INSPECTING / RETURNING ──distraction──▶ REDIRECTED ──investigation over──▶ RETURNING ──back on route──▶ INSPECTING
- *   REDIRECTED ──case solved near the distraction──▶ CAUGHT
+ * Tabla de transiciones. Los cambios no incluidos se rechazan y registran.
+ * WAITING --start--> ENTERING --fin de pausa de entrada--> INSPECTING
+ * INSPECTING --fin de ronda 1 a 3--> INTERVIEWING --fin del dialogo--> INSPECTING (ronda siguiente)
+ * INSPECTING --fin de ronda 4--> FINISHED
+ * INSPECTING --caso resuelto--> CAUGHT
+ * INSPECTING / RETURNING --distraccion--> REDIRECTED --fin de investigacion--> RETURNING --regreso a
+ * ruta--> INSPECTING
+ * REDIRECTED --caso resuelto cerca de la distraccion--> CAUGHT
  */
 export const DETECTIVE_TRANSITIONS = Object.freeze({
     [DETECTIVE_STATE.WAITING]: [DETECTIVE_STATE.ENTERING],
@@ -47,29 +47,29 @@ export const DETECTIVE_EVENTS = Object.freeze({
 });
 
 /**
- * Finite state machine that drives the detective.
+ * Maquina de estados finitos que controla al detective.
+ * La FSM decide QUE hace el detective; el objeto Detective decide COMO:
+ * seguimiento de rutas, puertas y animacion. Esta interfaz mantiene la clase
+ * independiente de Phaser y permite probarla en Node:
  *
- * The FSM decides WHAT the detective does; the Detective game object decides
- * HOW (path following, doors, animation). They communicate through a small
- * interface, which keeps this class free of Phaser and testable in Node:
+ * detective.navigateTo(position, { onArrive, onFail })
+ * detective.stop()
+ * detective.getPosition()
+ * detective.setSpeedMultiplier(multiplier)
+ * detective.faceTowards(position)
+ * detective.setSearching(isSearching)
  *
- *   detective.navigateTo(position, { onArrive, onFail })
- *   detective.stop()
- *   detective.getPosition()
- *   detective.setSpeedMultiplier(multiplier)
- *   detective.faceTowards(position)
- *   detective.setSearching(isSearching)
- *
- * Timers are advanced by `update(delta)`, so pausing the scene pauses the FSM.
+ * Los temporizadores avanzan con update(delta); pausar la escena tambien pausa la
+ * FSM.
  */
 export class DetectiveStateMachine extends SimpleEmitter {
     /**
      * @param {object} deps
-     * @param {object} deps.detective movement interface (see above)
+     * @param {object} deps.detective interfaz de movimiento descrita arriba
      * @param {import('../managers/InspectionManager.js').InspectionManager} deps.inspection
      * @param {import('../managers/EvidenceManager.js').EvidenceManager} deps.evidence
      * @param {() => {x:number,y:number}} deps.getPlayerPosition
-     * @param {{ entry: {x,y}, exit: {x,y} }} deps.positions world positions
+     * @param {{ entry: {x,y}, exit: {x,y} }} deps.positions posiciones en el mundo
      * @param {{ closeFrontDoor: Function }} deps.doors
      * @param {object} [deps.config]
      */
@@ -86,9 +86,9 @@ export class DetectiveStateMachine extends SimpleEmitter {
 
         this.state = DETECTIVE_STATE.WAITING;
         this.previousState = null;
-        // Incremented on every transition; callbacks from an older state are ignored.
+        // Aumenta en cada transicion; se ignoran los callbacks de estados anteriores.
         this.stateToken = 0;
-        // Data used by the current state (phase, timers, targets).
+        // Datos usados por el estado actual: fase, temporizadores y objetivos.
         this.context = {};
         this.history = [DETECTIVE_STATE.WAITING];
 
@@ -124,7 +124,7 @@ export class DetectiveStateMachine extends SimpleEmitter {
         };
     }
 
-    // ------------------------------------------------------------- framework
+    // ------------------------------------------------------------- estructura
 
     canTransition(nextState) {
         return DETECTIVE_TRANSITIONS[this.state].includes(nextState);
@@ -146,7 +146,7 @@ export class DetectiveStateMachine extends SimpleEmitter {
         return true;
     }
 
-    /** Wraps a callback so it only runs if the state has not changed since. */
+    /** Protege un callback para ejecutarlo solo si el estado no ha cambiado. */
     guard(callback) {
         const token = this.stateToken;
         return (...args) => {
@@ -171,16 +171,16 @@ export class DetectiveStateMachine extends SimpleEmitter {
         return this.state !== DETECTIVE_STATE.FINISHED && this.state !== DETECTIVE_STATE.CAUGHT;
     }
 
-    // --------------------------------------------------------- external events
+    // --------------------------------------------------------- eventos externos
 
-    /** Starts the visit (after the knock / introduction). */
+    /** Inicia la visita despues de los golpes en la puerta y la introduccion. */
     start() {
         return this.transition(DETECTIVE_STATE.ENTERING);
     }
 
     /**
-     * A distraction made a noise. Only interrupts inspection or the walk back
-     * to the route; interviews, entering and leaving are not interrupted.
+     * Una distraccion produjo ruido. Solo interrumpe la inspeccion o el regreso a la
+     * ruta; no interrumpe entrevistas, entrada ni salida.
      */
     notifyDistraction(distraction) {
         if (this.state !== DETECTIVE_STATE.INSPECTING && this.state !== DETECTIVE_STATE.RETURNING) {
@@ -189,7 +189,7 @@ export class DetectiveStateMachine extends SimpleEmitter {
         return this.transition(DETECTIVE_STATE.REDIRECTED, { distraction });
     }
 
-    /** Called by the scene when the interview dialogue has been read. */
+    /** La escena lo llama cuando termina la lectura del dialogo de entrevista. */
     completeInterview() {
         if (this.state !== DETECTIVE_STATE.INTERVIEWING || this.context.phase !== 'talking') {
             return false;
@@ -197,11 +197,11 @@ export class DetectiveStateMachine extends SimpleEmitter {
         return this.transition(DETECTIVE_STATE.INSPECTING, { routeIndex: this.context.interviewIndex + 1 });
     }
 
-    // ----------------------------------------------------------------- states
+    // ----------------------------------------------------------------- estados
 
     enterEntering() {
         this.context.phase = 'walking';
-        // The detective opens the front door himself when his path reaches it.
+        // El detective abre la puerta principal cuando su recorrido llega a ella.
         this.navigate(this.positions.entry, () => {
             this.context.phase = 'lookingAround';
             this.context.timer = this.config.entryPause;
@@ -243,7 +243,7 @@ export class DetectiveStateMachine extends SimpleEmitter {
         this.navigate(point.position,
             () => this.beginSearch(point),
             () => {
-                // Unreachable right now: skip this point rather than freezing.
+                // Punto inaccesible por ahora: se omite para evitar detener la partida.
                 this.inspection.completeCurrentPoint();
                 this.travelToCurrentPoint();
             });
@@ -288,7 +288,7 @@ export class DetectiveStateMachine extends SimpleEmitter {
     }
 
     /**
-     * The visit ends when enough distinct evidence objects have been discovered.
+     * La visita termina al descubrir suficientes evidencias distintas.
      */
     handleDiscoveries(discoveries, point) {
         if (discoveries.length === 0) {
@@ -340,7 +340,7 @@ export class DetectiveStateMachine extends SimpleEmitter {
             return;
         }
 
-        // Roro moves, so the path towards Roro is recalculated regularly.
+        // Roro se mueve; por eso se recalcula periodicamente la ruta hacia el.
         this.context.repathTimer -= delta;
         if (this.context.repathTimer <= 0) {
             this.context.repathTimer = this.config.chaseRepathInterval;
@@ -389,8 +389,8 @@ export class DetectiveStateMachine extends SimpleEmitter {
             this.transition(DETECTIVE_STATE.INSPECTING);
             return;
         }
-        // The route was never erased: the detective walks back to the point he
-        // was heading to (or searching) and resumes from there.
+        // La ruta se conserva: el detective regresa al punto al que se dirigia
+        // o que estaba inspeccionando, y retoma la busqueda desde alli.
         this.navigate(point.position,
             () => this.transition(DETECTIVE_STATE.INSPECTING, { resumed: true }),
             () => this.transition(DETECTIVE_STATE.INSPECTING, { resumed: true }));

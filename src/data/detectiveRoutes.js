@@ -1,19 +1,19 @@
 import { HIDING_CATEGORY, ROOM_IDS } from './apartmentData.js';
 
 /**
- * The detective's four inspection routes, visited in this order.
- * An interview takes place after each of the first three routes.
+ * Cuatro rutas del detective, recorridas en este orden. Hay una entrevista tras
+ * cada una de las tres primeras.
+ * Cada ruta revisa todos los escondites de su category. La primera agrega un
+ * barrido de cada habitacion para encontrar evidencias expuestas. Se barajan las
+ * habitaciones y despues sus puntos: el orden varia por partida conservando la
+ * agrupacion por habitacion.
  *
- * Each route searches every hiding place of its `category`. Route 1 also
- * includes a sweep of every room ("very obvious": evidence left in plain
- * sight). Points are visited in a randomised order: rooms are shuffled and
- * the points inside each room are shuffled, so the detective never zigzags
- * across the apartment but the order still differs every game.
+ * speedMultiplier: multiplica DETECTIVE_CONFIG.speed.
  *
- * - `speedMultiplier`: applied to DETECTIVE_CONFIG.speed.
- * - `inspectDuration`: time (ms) spent searching each point.
- * - `lookRadius`: exposed evidence closer than this (px) to the detective is
- *   discovered while he searches a point.
+ * inspectDuration: tiempo de inspeccion por punto en ms.
+ *
+ * lookRadius: distancia en pixeles dentro de la cual se descubre evidencia
+ * expuesta al inspeccionar.
  */
 export const INSPECTION_ROUTES = [
     {
@@ -48,7 +48,7 @@ export const INSPECTION_ROUTES = [
         name: 'Very hidden places',
         category: HIDING_CATEGORY.VERY_HIDDEN,
         includeRoomSweeps: false,
-        // The final route is faster than the previous ones (GAME_DESIGN 10.1).
+        // La ultima ruta es mas rapida que las anteriores (GAME_DESIGN 10.1).
         speedMultiplier: 1.6,
         inspectDuration: 1600,
         lookRadius: 64
@@ -56,8 +56,8 @@ export const INSPECTION_ROUTES = [
 ];
 
 /**
- * Room sweep points (tile coordinates): the detective stops in the middle of
- * each room and looks around. Used by routes with `includeRoomSweeps`.
+ * Puntos de barrido en coordenadas de tiles: el detective se detiene en el centro
+ * de cada habitacion y observa. Se usan con includeRoomSweeps.
  */
 export const ROOM_SWEEP_POINTS = [
     { id: 'sweepBedroom', room: ROOM_IDS.BEDROOM, tile: { x: 5, y: 6 }, lookRadius: 96 },

@@ -6,12 +6,12 @@ import { formatStoryText } from '../data/dialogueData.js';
 import { textStyle } from './textStyles.js';
 
 /**
- * Enlarged view of the victim's note: the paper graphic with the victim's
- * name written on it. The name comes from STORY.victimFullName and the text
- * from NOTE_CONTENT, nothing is hardcoded here.
+ * Vista ampliada de la nota con el nombre de la victima. El nombre proviene de
+ * STORY.victimFullName y el contenido de NOTE_CONTENT.
  *
- * While open, the scene suspends gameplay (see ApartmentScene.openNote).
- * Closes with E, ESC, Space, Enter or a click/tap.
+ * ApartmentScene.openNote suspende el juego mientras esta abierta. Se cierra con
+ * E, ESC, Espacio, Enter o clic tactil o de raton.
+ *
  */
 export class NoteInterface {
     constructor(scene) {
@@ -25,7 +25,7 @@ export class NoteInterface {
 
         this.dim = scene.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, 0x000000, 0.72).setOrigin(0, 0);
         this.paper = scene.add.image(centerX, centerY - 6, 'ui-note-paper');
-        // Fit the paper to the screen using an integer-friendly scale.
+        // Ajusta el papel a pantalla con una escala adecuada para pixeles enteros.
         const scale = Math.min(1, (GAME_HEIGHT - 70) / this.paper.height);
         this.paper.setScale(scale);
 
@@ -60,11 +60,11 @@ export class NoteInterface {
         this.container.setVisible(true).setAlpha(0);
         this.scene.tweens.add({ targets: this.container, alpha: 1, duration: 200 });
         this.isOpen = true;
-        // Ignore the E press that opened the note.
+        // Ignora la pulsacion de E que abrio la nota.
         Object.values(this.keys).forEach((key) => key.reset());
     }
 
-    /** Polled by the scene while the note is open. */
+    /** La escena lo consulta mientras la nota permanece abierta. */
     update() {
         if (!this.isOpen) {
             return;

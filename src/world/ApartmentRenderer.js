@@ -4,15 +4,15 @@ import { FLOOR_STYLES, TILESET_KEY, WALL_STYLES } from '../data/tilesetData.js';
 import { CELL_TYPE } from './ApartmentLayout.js';
 
 /**
- * Draws the apartment from ApartmentLayout. Graphics only: collisions are
- * created separately by CollisionManager, so art can be replaced freely.
+ * Dibuja el departamento desde ApartmentLayout. CollisionManager crea la fisica
+ * por separado, permitiendo sustituir los graficos.
+ * Pisos y caras de pared usan capas tilemap de 16 x 16 escaladas por WORLD_SCALE.
  *
- * - Floors and wall faces use Phaser tilemap layers with the 16x16 tileset,
- *   scaled by WORLD_SCALE.
- * - Wall tops (seen from above) are plain dark rectangles: the tileset has
- *   no top-of-wall tile.
- * - Furniture uses individual frames of the tileset (tilesetData.js) or
- *   optional textures that may still be placeholders.
+ * Las partes altas son rectangulos oscuros porque el tileset no incluye ese
+ * detalle.
+ *
+ * Los muebles usan cuadros del tileset o texturas opcionales con figuras
+ * provisionales como respaldo.
  */
 export class ApartmentRenderer {
     constructor(scene, layout) {
@@ -46,7 +46,7 @@ export class ApartmentRenderer {
                 if (cell === CELL_TYPE.FLOOR) {
                     floorLayer.putTileAt(this.floorTileFor(layout.getRoomIdAtTile(x, y)), x, y);
                 } else if (cell === CELL_TYPE.DOOR) {
-                    // Doorways use the floor of the room below them.
+                    // Los umbrales usan el piso de la habitacion situada debajo.
                     floorLayer.putTileAt(this.floorTileFor(this.roomBelow(x, y)), x, y);
                 } else if (cell === CELL_TYPE.WALL) {
                     const faceTile = this.wallFaceTile(x, y);
@@ -75,9 +75,9 @@ export class ApartmentRenderer {
     }
 
     /**
-     * Walls facing the viewer (with floor below) show a two-tile wallpaper
-     * face: the lower tile directly above the floor, the upper tile above it.
-     * Returns null for wall tiles seen from the top.
+     * Las paredes con suelo debajo muestran una cara de dos tiles: inferior justo
+     * sobre el piso y superior encima de aquel. Devuelve null para paredes vistas
+     * desde arriba.
      */
     wallFaceTile(x, y) {
         const isOpenBelow = (tileX, tileY) => {
@@ -109,7 +109,7 @@ export class ApartmentRenderer {
                 }
                 graphics.fillStyle(COLORS.wallTop, 1);
                 graphics.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-                // A lighter edge where the wall top meets a walkable area.
+                // Borde mas claro donde la parte alta de pared limita con una zona transitable.
                 graphics.fillStyle(COLORS.wallTopEdge, 1);
                 if (!layout.isWall(x - 1, y) && layout.getCell(x - 1, y) !== CELL_TYPE.VOID) {
                     graphics.fillRect(x * TILE_SIZE, y * TILE_SIZE, 3, TILE_SIZE);
@@ -152,7 +152,7 @@ export class ApartmentRenderer {
                 if (support) {
                     return support.depth + 0.5;
                 }
-                // Depth-sort by the bottom edge, like the characters' feet.
+                // Ordena por borde inferior, como los pies de los personajes.
                 return DEPTH.worldBase + sprite.y + sprite.displayHeight;
             }
         }

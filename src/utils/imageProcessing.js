@@ -1,13 +1,13 @@
 /**
-* Funciones auxiliares para Canvas, utilizadas durante la carga para preparar los archivos PNG proporcionados. 
-*
-* Las imágenes recortadas de personajes u objetos incluyen un fondo opaco integrado.
-* En lugar de modificar los archivos originales, el fondo se elimina en memoria:
-* se realiza un relleno por inundación (flood fill) desde el borde de la imagen,
-* eliminando todos los píxeles conectados cuyo color coincida con alguno de los colores del fondo. 
-* Los píxeles interiores del mismo color (por ejemplo, los contornos oscuros) se conservan,
-* ya que no están conectados con el borde. 
-*/
+ * Utilidades Canvas para preparar PNG durante la carga.
+ *
+ * Las imagenes recortadas incluyen un fondo opaco. Se elimina en memoria sin
+ * editar originales: un relleno desde el borde borra pixeles conectados cuyo color
+ * coincide con el fondo. Los pixeles interiores del mismo color, como contornos
+ * oscuros, se conservan si no estan conectados al borde.
+ *
+ *
+ */
 
 function createCanvas(width, height) {
     const canvas = document.createElement('canvas');
@@ -23,7 +23,7 @@ export function imageToCanvas(image) {
     return canvas;
 }
 
-/** Elimina los píxeles del fondo conectados al borde. Modifica el lienzo. */
+/** Borra el fondo conectado al borde; modifica el Canvas recibido. */
 export function removeBackground(canvas, backgroundColors, tolerance = 3) {
     const { width, height } = canvas;
     const context = canvas.getContext('2d', { willReadFrequently: true });
@@ -73,7 +73,7 @@ export function removeBackground(canvas, backgroundColors, tolerance = 3) {
     return canvas;
 }
 
-/** Devuelve el cuadro delimitador de los píxeles no transparentes, o null si está vacío. */
+/** Devuelve los limites del contenido visible o null si no hay pixeles opacos. */
 export function getContentBounds(canvas) {
     const { width, height } = canvas;
     const pixels = canvas.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, width, height).data;
@@ -106,7 +106,7 @@ export function trimCanvas(canvas) {
     return trimmed;
 }
 
-/** Nearest-neighbour resize that keeps pixel art sharp. */
+/** Escala por vecino mas cercano para mantener nitido el pixel art. */
 export function resizeNearest(canvas, scale) {
     if (scale === 1) {
         return canvas;
@@ -136,10 +136,9 @@ export function resizeNearest(canvas, scale) {
 }
 
 /**
-* Ajusta el tamaño de un lienzo al valor indicado, centrándolo horizontalmente
-* y alineándolo en la parte inferior (donde se sitúan los pies del personaje). 
-*/
-
+ * Rellena el lienzo al tamano indicado, centrado horizontalmente y alineado abajo,
+ * en los pies del personaje.
+ */
 export function padToSize(canvas, width, height) {
     if (canvas.width === width && canvas.height === height) {
         return canvas;

@@ -1,9 +1,9 @@
 /**
- * Automated checks of the game logic that does not depend on Phaser:
- * level data validity, navigation, evidence scoring rules, inspection routes
- * and the detective finite state machine.
+ * Pruebas automaticas de logica independiente de Phaser: datos del nivel,
+ * navegacion, puntaje, rutas de inspeccion y maquina de estados del detective.
  *
- * Run with: npm test
+ * Ejecutar: npm test.
+ *
  */
 import { ApartmentLayout } from '../src/world/ApartmentLayout.js';
 import { NavigationManager } from '../src/physics/NavigationManager.js';
@@ -52,7 +52,7 @@ function createHidingSpots() {
     }, HIDING_RULES.hidingSpotCapacity));
 }
 
-/** True if some walkable tile centre reachable from Roro's start is within the interaction range of `point`. */
+/** Indica si un centro de tile transitable alcanzable desde el inicio de Roro esta dentro del rango de interaccion de point. */
 function isInteractable(point, range = PLAYER_CONFIG.interactionRange) {
     const world = layout.tilePointToWorld(point);
     for (let y = 0; y < layout.height; y++) {
@@ -181,7 +181,7 @@ section('Evidence and score');
     check('retrieve the bat (score -1)', evidence.retrieveFrom(testSpots[0]).ok && evidence.getScore() === 1);
     check('re-hide the bat (counted once)', evidence.hideCarried(testSpots[2]).ok && evidence.getScore() === 2);
 
-    // Hide everything; score must stop at 6.
+    // Esconde todo; el puntaje debe limitarse a seis.
     let spotIndex = 3;
     for (const definition of EVIDENCE_ITEMS) {
         if (evidence.getItem(definition.id).state === EVIDENCE_STATE.NOT_FOUND) {
@@ -248,7 +248,7 @@ section('Inspection routes');
 // ---------------------------------------------------------------------------
 section('Detective state machine (simulated)');
 
-/** Mock of the Detective game object: arrives instantly on the next tick. */
+/** Doble de prueba de Detective: llega de inmediato en el siguiente ciclo. */
 class MockDetective {
     constructor(position) {
         this.position = { ...position };
@@ -289,7 +289,7 @@ function createSimulation({ rules = HIDING_RULES, prepare = () => {}, seed = 3, 
     const playerPosition = layout.tileCenter(KEY_TILES.roroStart);
     const fsm = new DetectiveStateMachine({
         detective, inspection, evidence,
-        getPlayerPosition: () => detective.position, // the detective always "reaches" Roro
+        getPlayerPosition: () => detective.position, // El detective siempre alcanza a Roro en esta simulacion.
         positions: { entry: layout.tileCenter(KEY_TILES.detectiveEntry), exit: layout.tileCenter(KEY_TILES.detectiveExit) },
         doors: { closeFrontDoor: () => {} }
     });
@@ -317,7 +317,7 @@ function createSimulation({ rules = HIDING_RULES, prepare = () => {}, seed = 3, 
 }
 
 {
-    // Victory: Roro carries everything (carry limit lifted for the test), so nothing can be found.
+    // Victoria: Roro lleva todo, sin limite de carga en esta prueba; no queda nada descubrible.
     const sim = createSimulation({
         rules: { ...HIDING_RULES, carryLimit: 6 },
         prepare: ({ evidence }) => EVIDENCE_ITEMS.forEach((item) => evidence.pickUp(item.id))
@@ -332,12 +332,12 @@ function createSimulation({ rules = HIDING_RULES, prepare = () => {}, seed = 3, 
 }
 
 {
-    // One discovery: the bat is hidden in a "very obvious" spot, searched in route 1.
+    // Un hallazgo: el bate esta en un escondite muy evidente revisado en la ronda 1.
     const sim = createSimulation({
         rules: { ...HIDING_RULES, carryLimit: 6 },
         prepare: ({ evidence, spots: simSpots }) => {
             EVIDENCE_ITEMS.forEach((item) => evidence.pickUp(item.id));
-            // Hide only the bat; keep the rest carried.
+            // Esconde solo el bate; los demas objetos siguen en manos de Roro.
             evidence.carriedIds = ['bat', ...evidence.carriedIds.filter((id) => id !== 'bat')];
             evidence.hideCarried(simSpots.find((spot) => spot.id === 'underBed'));
         }
@@ -350,7 +350,7 @@ function createSimulation({ rules = HIDING_RULES, prepare = () => {}, seed = 3, 
 }
 
 {
-    // Hiding in a spot AFTER it was searched is safe.
+    // Es seguro esconder algo DESPUES de que se inspecciono el lugar.
     let hidden = false;
     const sim = createSimulation({
         rules: { ...HIDING_RULES, carryLimit: 6 },
@@ -367,7 +367,7 @@ function createSimulation({ rules = HIDING_RULES, prepare = () => {}, seed = 3, 
 }
 
 {
-    // Exposed evidence near a room sweep point is discovered.
+    // Se descubre evidencia expuesta cerca de un punto de barrido de habitacion.
     const sim = createSimulation({
         prepare: ({ evidence }) => {
             const sweep = ROOM_SWEEP_POINTS.find((point) => point.id === 'sweepHallway');
@@ -379,7 +379,7 @@ function createSimulation({ rules = HIDING_RULES, prepare = () => {}, seed = 3, 
 }
 
 {
-    // Distraction: interrupts, then the detective returns to the same route point.
+    // La distraccion interrumpe al detective; despues vuelve al mismo punto de ruta.
     const sim = createSimulation({
         rules: { ...HIDING_RULES, carryLimit: 6 },
         prepare: ({ evidence }) => EVIDENCE_ITEMS.forEach((item) => evidence.pickUp(item.id))
@@ -417,7 +417,7 @@ function createSimulation({ rules = HIDING_RULES, prepare = () => {}, seed = 3, 
     check('distraction is ignored before the detective enters', !sim.fsm.notifyDistraction({}));
 }
 
-// Difficulty keeps visibility while changing the number of distinct evidence objects needed.
+// La dificultad conserva visibilidad y cambia la cantidad de evidencias distintas necesarias.
 {
     const { DIFFICULTY_SETTINGS } = await import('../src/data/gameConfig.js');
     for (const [difficulty, visibility, required] of [['easy', 'full', 3], ['normal', 'room', 2], ['hard', 'radius', 1]]) {

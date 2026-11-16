@@ -1,7 +1,7 @@
 /**
- * Minimal event emitter used by the pure logic modules (evidence, inspection,
- * detective state machine). Keeping these modules free of Phaser imports lets
- * them run in Node for automated tests (scripts/verify-logic.mjs).
+ * Emisor minimo de eventos para logica pura de evidencias e IA. Al no depender de
+ * Phaser, estos modulos pueden ejecutarse en Node para pruebas automaticas con
+ * scripts/verify-logic.mjs.
  */
 export class SimpleEmitter {
     constructor() {

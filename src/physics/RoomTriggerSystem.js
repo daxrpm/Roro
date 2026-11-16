@@ -1,12 +1,12 @@
 /**
- * Room detection with Arcade Physics overlap triggers.
+ * Deteccion de habitaciones mediante zonas de superposicion de Arcade Physics.
  *
- * Every room and doorway gets an invisible static trigger zone. Arcade
- * overlap callbacks record which zones a character's feet touch during the
- * physics step; the scene then reads the character's current location.
+ * Cada habitacion y puerta tiene una zona estatica invisible. Los callbacks de
+ * overlap registran las zonas que tocan los pies durante el paso fisico; la escena
+ * consulta la ubicacion resultante.
  *
- * A doorway belongs to the two rooms it connects, which the visibility
- * system uses to reveal both rooms while Roro stands in it.
+ * Un umbral pertenece a las dos habitaciones conectadas, por lo que ambas se
+ * revelan mientras Roro esta en el.
  */
 export class RoomTriggerSystem {
     /**
@@ -34,7 +34,7 @@ export class RoomTriggerSystem {
         zone.body.updateFromGameObject();
     }
 
-    /** Starts tracking a character; overlaps are recorded every physics step. */
+    /** Registra un personaje; las superposiciones se recogen en cada paso fisico. */
     track(character, initialPosition) {
         const entry = {
             hits: [],
@@ -47,9 +47,9 @@ export class RoomTriggerSystem {
     }
 
     /**
-     * Resolves the location from the overlaps recorded since the last call.
-     * Doorways take priority over rooms because they reveal both rooms.
-     * If no physics step ran this frame, the previous location is kept.
+     * Resuelve ubicacion con las superposiciones desde la ultima llamada. Las puertas
+     * tienen prioridad porque revelan ambas habitaciones. Si no hubo paso fisico,
+     * conserva la ubicacion anterior.
      */
     update() {
         for (const entry of this.tracked.values()) {

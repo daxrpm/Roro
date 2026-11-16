@@ -6,7 +6,7 @@ const PUBLIC_DIR = resolve('public');
 const VIRTUAL_ID = 'virtual:available-assets';
 const RESOLVED_VIRTUAL_ID = `\0${VIRTUAL_ID}`;
 
-/** Lists every file under public/ as a path relative to it (e.g. "assets/x.png"). */
+/** Enumera archivos bajo public/ con rutas relativas, por ejemplo assets/x.png. */
 function listPublicFiles(directory = PUBLIC_DIR) {
     if (!existsSync(directory)) {
         return [];
@@ -18,10 +18,10 @@ function listPublicFiles(directory = PUBLIC_DIR) {
 }
 
 /**
- * Exposes the list of files present in public/ as `virtual:available-assets`.
- * The AssetManager uses it to skip optional assets that have not been added
- * yet, instead of requesting them and logging load errors. Adding or removing
- * a file in public/ reloads the page during development.
+ * Expone archivos de public/ mediante virtual:available-assets. AssetManager omite
+ * opcionales ausentes en lugar de solicitarlos y generar errores. Agregar o quitar
+ * archivos de public/ recarga la pagina durante el desarrollo.
+ *
  */
 function availableAssetsPlugin() {
     return {
@@ -55,11 +55,11 @@ function availableAssetsPlugin() {
 
 export default defineConfig({
     plugins: [availableAssetsPlugin()],
-    // Relative paths so the production build in dist/ works from any folder
-    // (for example when the project is delivered as a ZIP).
+    // Rutas relativas para que dist/ funcione al servirlo desde cualquier carpeta,
+    // por ejemplo cuando el proyecto se entrega en un archivo ZIP.
     base: './',
     build: {
-        // Phaser alone is ~1.2 MB minified; this is expected for a Phaser game.
+        // Phaser ocupa cerca de 1.2 MB minificado; es normal para un juego con ese motor.
         chunkSizeWarningLimit: 1600
     }
 });

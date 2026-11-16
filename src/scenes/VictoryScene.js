@@ -1,7 +1,7 @@
 import { COLORS, SCENE_KEYS } from '../data/gameConfig.js';
 import { ResultScene } from './ResultScene.js';
 
-/** Shown when the detective leaves without finding decisive evidence. */
+/** Se muestra cuando el detective termina la visita sin resolver el caso. */
 export class VictoryScene extends ResultScene {
     constructor() {
         super(SCENE_KEYS.VICTORY, {

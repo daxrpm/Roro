@@ -1,11 +1,11 @@
 /**
- * Simple programmatic stand-ins for graphics that are not available yet
- * (doors, kitchen and bathroom fixtures). They are generated once at load
- * time with Phaser Graphics and stored under the same texture key the real
- * file will use, so adding the real PNG later requires no code change.
+ * Figuras provisionales para recursos ausentes, como puertas y muebles de cocina o
+ * bano. Se generan una vez al cargar con Phaser Graphics y usan la misma clave de
+ * textura del archivo definitivo; agregar el PNG no requiere cambiar codigo.
  *
- * These are deliberately plain shapes, outlined in magenta by default
- * (PLACEHOLDER_STYLE in gameConfig.js) so they are easy to recognise.
+ * Son figuras simples con contorno magenta predeterminado por PLACEHOLDER_STYLE
+ * para reconocerlas facilmente.
+ *
  */
 
 function shade(color, factor) {
@@ -29,7 +29,7 @@ const SHAPES = {
     },
 
     doorOpen(graphics, width, height, color) {
-        // An open door seen from above: a thin leaf along the left jamb.
+        // Puerta abierta vista desde arriba: hoja delgada junto al marco izquierdo.
         graphics.fillStyle(shade(color, 0.6), 1).fillRect(0, 0, 6, height);
         graphics.fillStyle(color, 1).fillRect(1, 1, 4, height - 2);
     },

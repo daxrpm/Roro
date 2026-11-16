@@ -1,10 +1,10 @@
 /**
- * Creates the Arcade Physics static bodies of the apartment, independently
- * of the graphics:
- * - walls (merged rectangles from ApartmentLayout),
- * - solid furniture (colliders declared in apartmentData.js),
- * - door blockers (enabled only while a door is closed),
- * - player-only blockers (keep Roro inside the apartment).
+ * Crea cuerpos estaticos de Arcade Physics separados del dibujo:
+ * Paredes fusionadas por ApartmentLayout.
+ * Muebles solidos con colliders de apartmentData.js.
+ * Bloqueos de puertas activos mientras estan cerradas.
+ *
+ * Barreras exclusivas del jugador para mantener a Roro en el departamento.
  */
 export class CollisionManager {
     /**
@@ -45,7 +45,7 @@ export class CollisionManager {
         return this.addZone(this.playerOnly, rect, 'playerOnly');
     }
 
-    /** Roro collides with everything, including the player-only barriers. */
+    /** Roro colisiona con todos los grupos, incluidas sus barreras exclusivas. */
     attachPlayer(sprite) {
         sprite.setCollideWorldBounds(true);
         this.scene.physics.add.collider(sprite, this.solids);
@@ -53,7 +53,7 @@ export class CollisionManager {
         this.scene.physics.add.collider(sprite, this.playerOnly);
     }
 
-    /** The detective collides with walls, furniture and closed doors. */
+    /** El detective colisiona con paredes, muebles y puertas cerradas. */
     attachNonPlayer(sprite) {
         this.scene.physics.add.collider(sprite, this.solids);
         this.scene.physics.add.collider(sprite, this.doors);

@@ -4,11 +4,11 @@ import { MuteButton } from './MuteButton.js';
 import { TEXT_STYLES, textStyle } from './textStyles.js';
 
 /**
- * Heads-up display fixed to the camera:
- * - numeric score "HIDDEN 3 / 6" plus six pips as a secondary indicator,
- * - difficulty, current inspection phase, carried object,
- * - temporary messages (hidden objects, door noises, distractions),
- * - mute toggle.
+ * HUD fijo a la camara:
+ * Puntaje numerico y seis marcas como indicador adicional.
+ * Dificultad, fase de inspeccion y objeto llevado.
+ * Mensajes temporales de objetos, puertas y distracciones.
+ * Control para silenciar sonido.
  */
 export class HUD {
     constructor(scene, { maxScore, difficultyLabel }) {
@@ -85,7 +85,7 @@ export class HUD {
         this.carryText.setColor(name ? COLORS.accent : COLORS.textMuted);
     }
 
-    /** Shows a message at the bottom of the screen for `duration` ms. */
+    /** Muestra un mensaje inferior durante duration milisegundos. */
     showMessage(text, { duration = 2600, color = COLORS.text } = {}) {
         this.messageText.setText(text).setColor(color).setVisible(true).setAlpha(1);
         this.messageTimer?.remove();

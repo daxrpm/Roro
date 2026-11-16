@@ -1,4 +1,4 @@
-/** Original procedural effects. Run: node scripts/generate-effects.mjs */
+/** Efectos originales sintetizados. Ejecutar: node scripts/generate-effects.mjs */
 import { writeFileSync } from 'node:fs';
 
 const RATE = 44100;
@@ -50,7 +50,7 @@ render('door_open.wav', 0.55, (t, n, f) => {
 render('door_close.wav', 0.32, (t, n, f) => 0.65 * tone(95, t) * Math.exp(-t * 25) + 0.4 * tone(240, t) * Math.exp(-t * 55) + f * Math.exp(-t * 35), 103);
 render('paper_rustle.wav', 0.22, (t, n, f) => (n - f) * Math.exp(-t * 13) * (0.55 + 0.45 * tone(39, t)), 104);
 render('kettle_whistle.wav', 2, (t, n, f) => {
-    // A rising steam whistle with vibrato, a quiet upper harmonic and air hiss.
+    // Silbido de vapor ascendente con vibrato, armonico suave y ruido de aire.
     const phase = TAU * (1380 * t + 65 * t * t) + 0.8 * tone(6, t);
     return envelope(t, 2, 0.3, 0.4) * (0.65 * Math.sin(phase) + 0.10 * Math.sin(2 * phase) + 0.08 * (n - f));
 }, 105);

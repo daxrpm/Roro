@@ -4,8 +4,8 @@ import { AudioManager } from '../managers/AudioManager.js';
 import { textStyle } from './textStyles.js';
 
 /**
- * Pixel-style text button usable with the mouse, touch, or keyboard
- * (through ButtonList). Drawn with Phaser shapes, no image assets needed.
+ * Boton de texto estilo pixel que admite raton, tactil y teclado mediante
+ * ButtonList. Usa figuras de Phaser sin necesitar imagenes.
  */
 export class Button extends Phaser.GameObjects.Container {
     constructor(scene, x, y, label, onClick, { width = 260, height = 40, fontSize = '16px' } = {}) {
@@ -46,15 +46,15 @@ export class Button extends Phaser.GameObjects.Container {
 }
 
 /**
- * Vertical list of buttons with keyboard navigation (W/S or arrows, Enter
- * or Space to activate) and mouse hover selection.
+ * Lista vertical de botones con navegacion W/S o flechas, activacion con Enter o
+ * Espacio y seleccion al pasar el raton.
  */
 export class ButtonList {
     constructor(scene, buttons) {
         this.scene = scene;
         this.buttons = buttons;
         this.index = 0;
-        // Set to false while an overlay (instructions...) covers the list.
+        // Es false mientras una capa, como instrucciones, cubre la lista.
         this.enabled = true;
         buttons.forEach((button, index) => button.on('hover', () => this.select(index)));
         this.select(0);

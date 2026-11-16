@@ -8,12 +8,12 @@ import { TEXT_STYLES, textStyle } from '../ui/textStyles.js';
 import { fadeIn, fadeToScene } from './sceneTransitions.js';
 
 /**
- * Shared layout of the victory and defeat screens: title, message, final
- * score, high score, and Restart / Main menu buttons.
+ * Diseno compartido de victoria y derrota: titulo, mensaje, puntaje final, record
+ * y botones para reiniciar o volver al menu.
  */
 export class ResultScene extends Phaser.Scene {
     /**
-     * @param {string} key scene key
+     * @param {string} key clave de escena
      * @param {{title:string, color:string, message:(result)=>string}} presentation
      */
     constructor(key, presentation) {

@@ -1,4 +1,4 @@
-// English source strings and their Spanish translations.
+// Textos fuente en ingles y sus traducciones al espanol.
 export const SPANISH = {
     "CASE: {found}/{required} | STILL NEEDED: {remaining}": "CASO: {found}/{required} | FALTAN: {remaining}",
     "Case evidence: {found}/{required}": "Evidencias del caso: {found}/{required}",

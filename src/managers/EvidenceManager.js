@@ -4,8 +4,8 @@ import { EVIDENCE_STATE } from '../data/evidenceData.js';
 import { HIDING_RULES, SCORE_CONFIG } from '../data/gameConfig.js';
 
 /**
- * Allowed evidence state transitions. Any other change is rejected, which
- * guarantees that an object can never be scored twice.
+ * Transiciones permitidas de evidencia. Los cambios no incluidos se rechazan para
+ * impedir que un mismo objeto puntue dos veces.
  */
 const ALLOWED_TRANSITIONS = Object.freeze({
     [EVIDENCE_STATE.NOT_FOUND]: [EVIDENCE_STATE.CARRIED, EVIDENCE_STATE.DISCOVERED],
@@ -20,13 +20,13 @@ export const EVIDENCE_EVENTS = Object.freeze({
 });
 
 /**
- * Owns the state of the six evidence objects and the score.
+ * Controla el estado de seis evidencias y su puntaje.
  *
- * The score is derived from the states (number of HIDDEN objects) instead of
- * being incremented separately, so it is always consistent: it cannot exceed
- * the number of objects and the same object cannot be counted twice.
+ * El puntaje se deriva contando HIDDEN, en lugar de incrementarse por separado: no
+ * supera la cantidad de objetos ni cuenta uno dos veces.
  *
- * Pure logic (no Phaser) so it can be tested in Node.
+ * Logica independiente de Phaser para poder probarla en Node.
+ *
  */
 export class EvidenceManager extends SimpleEmitter {
     constructor(definitions, rules = HIDING_RULES, evidenceToSolve = 3) {
@@ -37,7 +37,7 @@ export class EvidenceManager extends SimpleEmitter {
             id: definition.id,
             definition,
             state: EVIDENCE_STATE.NOT_FOUND,
-            // World position while NOT_FOUND.
+            // Posicion en el mundo mientras el estado es NOT_FOUND.
             position: null,
             room: null,
             hidingSpotId: null,
@@ -47,9 +47,9 @@ export class EvidenceManager extends SimpleEmitter {
     }
 
     /**
-     * Chooses spawn points: random items get distinct points from the
-     * predefined list, fixed items use their configured point.
-     * @returns {Map<string, object>} evidence id -> spawn point (tile units)
+     * Elige posiciones: los objetos aleatorios reciben puntos distintos de la
+     * lista predefinida; los objetos fijos usan su punto configurado.
+     * @returns {Map<string, object>} id de evidencia -> punto inicial (en tiles)
      */
     static chooseSpawnPoints(definitions, randomPoints, fixedPoints, random = Math.random) {
         const randomItems = definitions.filter((definition) => definition.spawn === 'random');
@@ -68,7 +68,7 @@ export class EvidenceManager extends SimpleEmitter {
         return result;
     }
 
-    // ---------------------------------------------------------------- queries
+    // ---------------------------------------------------------------- consultas
 
     getItem(id) {
         return this.items.get(id) ?? null;
@@ -101,7 +101,7 @@ export class EvidenceManager extends SimpleEmitter {
         return this.getAll().filter((item) => item.state === state).length;
     }
 
-    // -------------------------------------------------------------- mutations
+    // -------------------------------------------------------------- cambios
 
     setSpawn(id, position, room) {
         const item = this.items.get(id);
@@ -131,7 +131,7 @@ export class EvidenceManager extends SimpleEmitter {
         return true;
     }
 
-    /** Roro picks up an object lying in the apartment. */
+    /** Roro recoge un objeto que esta en el departamento. */
     pickUp(id) {
         const item = this.items.get(id);
         if (!item || item.state !== EVIDENCE_STATE.NOT_FOUND) {
@@ -147,7 +147,7 @@ export class EvidenceManager extends SimpleEmitter {
         return { ok: true, action: 'pickUp', item };
     }
 
-    /** Hides the carried object in a hiding place. Awards one point. */
+    /** Guarda el objeto llevado en un escondite y suma un punto. */
     hideCarried(hidingSpot) {
         const item = this.getCarriedItem();
         if (!item) {
@@ -165,7 +165,7 @@ export class EvidenceManager extends SimpleEmitter {
         return { ok: true, action: 'hide', item, hidingSpot };
     }
 
-    /** Takes a hidden object back out of a hiding place (score -1). */
+    /** Recupera un objeto del escondite y resta un punto. */
     retrieveFrom(hidingSpot) {
         if (!this.rules.allowRetrieval) {
             return { ok: false, reason: 'notAllowed' };
@@ -186,10 +186,10 @@ export class EvidenceManager extends SimpleEmitter {
     }
 
     /**
-     * Evidence the detective finds while searching an inspection point:
-     * - every object stored in the hiding place being searched, and
-     * - every object lying exposed within `lookRadius` in the same room.
-     * Carried objects are never found.
+     * Evidencias encontradas al inspeccionar un punto:
+     * Todos los objetos guardados en el escondite revisado.
+     * Los objetos expuestos dentro de lookRadius en la misma habitacion.
+     * Nunca se descubren los objetos que Roro lleva en sus manos.
      */
     findDiscoverable({ hidingSpot = null, position, lookRadius, room }) {
         const found = [];

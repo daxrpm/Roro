@@ -12,7 +12,7 @@ import { PauseScene } from './scenes/PauseScene.js';
 import { VictoryScene } from './scenes/VictoryScene.js';
 import { DefeatScene } from './scenes/DefeatScene.js';
 
-
+// Agrega ?debug a la URL para dibujar los cuerpos de Arcade Physics.
 const debugPhysics = new URLSearchParams(window.location.search).has('debug');
 
 const config = {
@@ -36,7 +36,7 @@ const config = {
     },
     input: {
         keyboard: true,
-        // Para varios toques simultáneos en los controles en pantalla.
+        // Varios toques simultaneos para los controles de pantalla.
         activePointers: 3
     },
     scene: [
@@ -55,7 +55,7 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-// Disponible solo en desarrollo, para inspeccionar el juego desde la consola del navegador.
+// Se expone solo en desarrollo para inspeccionar el juego desde la consola.
 if (import.meta.env.DEV) {
     window.__RORO__ = game;
 }

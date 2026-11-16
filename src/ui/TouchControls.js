@@ -2,10 +2,10 @@ import { COLORS, DEPTH, GAME_HEIGHT, GAME_WIDTH } from '../data/gameConfig.js';
 import { textStyle } from './textStyles.js';
 
 /**
- * On-screen controls for touch devices (TECHNICAL_REQUIREMENTS 3.7):
- * a four-way pad on the left, an interact button and a pause button on the
- * right. They write into the same InputManager the keyboard uses.
- * Only created when the device reports touch support.
+ * Controles en pantalla para tactil (TECHNICAL_REQUIREMENTS 3.7): pad de cuatro
+ * direcciones a la izquierda y botones de interaccion y pausa a la derecha.
+ * Escriben en el mismo InputManager del teclado.
+ * Se crean con soporte tactil o al forzarlos mediante la URL.
  */
 export class TouchControls {
     /**
@@ -68,7 +68,7 @@ export class TouchControls {
         button.on('pointerout', () => button.setFillStyle(COLORS.panel, 0.55));
     }
 
-    /** Shown on touch devices, or on any device with `?touch` in the URL. */
+    /** Se muestra con soporte tactil o cuando la URL contiene ?touch. */
     static isSupported(scene) {
         const forced = new URLSearchParams(window.location.search).has('touch');
         return forced || Boolean(scene.sys.game.device.input.touch);

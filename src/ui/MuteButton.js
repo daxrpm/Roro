@@ -5,8 +5,8 @@ import { AudioManager } from '../managers/AudioManager.js';
 import { textStyle } from './textStyles.js';
 
 /**
- * Small "Sound: ON / OFF" toggle shown in menus and the HUD. Also toggled
- * with the M key. Stays in sync with AudioManager settings.
+ * Control de sonido en menus y HUD, activable tambien con M. Permanece
+ * sincronizado con los ajustes de AudioManager.
  */
 export class MuteButton extends Phaser.GameObjects.Container {
     constructor(scene, x, y, { fixed = false } = {}) {
@@ -17,8 +17,8 @@ export class MuteButton extends Phaser.GameObjects.Container {
         this.add([this.background, this.label]);
         this.setSize(112, 28);
         if (fixed) {
-            // Children need the scroll factor too, otherwise their input hit
-            // areas move with the camera.
+            // Los hijos tambien necesitan factor de desplazamiento fijo; de otro modo,
+            // sus areas de entrada se mueven con la camara.
             this.setScrollFactor(0, 0, true);
         }
 

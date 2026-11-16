@@ -1,9 +1,9 @@
 /**
- * Regions of interiors_demo.png (256x176, Pixel Lands Interiors by Trislin).
+ * Regiones de interiors_demo.png (256 x 176, Pixel Lands Interiors de Trislin).
  *
- * The sheet is not a uniform tile grid: furniture pieces have their own sizes.
- * The rectangles below are the tight bounds of each piece, measured from the
- * actual image. Coordinates are in source pixels.
+ * La imagen no es una grilla uniforme: cada mueble tiene su propio tamano. Los
+ * rectangulos ajustan los limites de cada pieza, medidos sobre la imagen real en
+ * pixeles originales.
  */
 export const TILESET_KEY = 'interiors';
 
@@ -43,14 +43,14 @@ export const FURNITURE_FRAMES = Object.freeze({
 });
 
 /**
- * Indices of 16x16 tiles in the sheet (row * 16 + column), used by the
- * Phaser tilemap layers for floors and wall faces.
+ * Indices de tiles de 16 x 16 en la imagen (fila * 16 + columna), usados por las
+ * capas tilemap de Phaser para pisos y caras de pared.
  */
 export const TILE_INDEX = Object.freeze({
     floorWood: 2 * 16 + 7,
     floorStone: 2 * 16 + 6,
-    // 3x3 wall panels: blue wallpaper (columns 0-2) and stone (columns 3-5).
-    // The middle column tiles horizontally. Top row = upper trim, bottom row = baseboard.
+    // Paneles de pared de 3 x 3: papel azul en columnas 0 a 2 y piedra en 3 a 5.
+    // La columna central se repite horizontalmente. Fila superior: moldura; inferior: zocalo.
     wallBlueUpper: 0 * 16 + 1,
     wallBlueLower: 2 * 16 + 1,
     wallStoneUpper: 0 * 16 + 4,

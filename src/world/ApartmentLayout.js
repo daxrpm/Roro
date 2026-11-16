@@ -15,16 +15,16 @@ export const CELL_TYPE = Object.freeze({
     DOOR: 3
 });
 
-// A furniture collider must overlap a tile by more than this many pixels on
-// both axes to make the tile unwalkable for navigation.
+// Un collider de mueble debe superponerse a un tile mas que este margen en
+// ambos ejes para bloquear esa celda en la grilla de navegacion.
 const NAVIGATION_BLOCK_MARGIN = 4;
 
 /**
- * Pure model of the apartment built from apartmentData.js.
+ * Modelo puro del departamento construido desde apartmentData.js.
  *
- * It answers spatial questions (which room is at a position, which tiles are
- * walkable, where the walls are) for the renderer, the collision system, the
- * navigation system and the visibility system. It has no Phaser dependency.
+ * Responde consultas espaciales sobre habitaciones, tiles transitables y paredes
+ * para dibujo, colisiones, navegacion y visibilidad. No depende de Phaser.
+ *
  */
 export class ApartmentLayout {
     constructor(data = { GRID_WIDTH, GRID_HEIGHT, APARTMENT_BOUNDS, ROOMS, DOORS, FURNITURE }) {
@@ -46,7 +46,7 @@ export class ApartmentLayout {
         this.markFurnitureBlockedCells();
     }
 
-    // ------------------------------------------------------------------ build
+    // ---------------------------------------------------------------- construccion
 
     buildCells(bounds) {
         this.fillRect(bounds, CELL_TYPE.WALL);
@@ -119,7 +119,7 @@ export class ApartmentLayout {
         this.forEachCellInRect(rect, (x, y) => this.setCell(x, y, type));
     }
 
-    // ---------------------------------------------------------------- queries
+    // ---------------------------------------------------------------- consultas
 
     index(x, y) {
         return y * this.width + x;
@@ -143,7 +143,7 @@ export class ApartmentLayout {
         return this.getCell(x, y) === CELL_TYPE.WALL;
     }
 
-    /** Walkable for navigation: floor or door, not blocked by furniture. */
+    /** Transitable: piso o puerta sin bloqueo por muebles. */
     isWalkable(x, y) {
         const cell = this.getCell(x, y);
         return (cell === CELL_TYPE.FLOOR || cell === CELL_TYPE.DOOR) && !this.furnitureBlocked[this.index(x, y)];
@@ -173,7 +173,7 @@ export class ApartmentLayout {
         return { x: (tile.x + 0.5) * this.tileSize, y: (tile.y + 0.5) * this.tileSize };
     }
 
-    /** Converts a fractional tile point (as used in apartmentData) to world pixels. */
+    /** Convierte un punto fraccionario de tiles, como los de apartmentData, a pixeles. */
     tilePointToWorld(point) {
         return { x: point.x * this.tileSize, y: point.y * this.tileSize };
     }
@@ -188,8 +188,8 @@ export class ApartmentLayout {
     }
 
     /**
-     * Location of a world position: the room id, plus the door id when the
-     * position is inside a doorway (doorways belong to two rooms).
+     * Ubicacion de un punto mundo: id de habitacion y, dentro de un umbral, id de
+     * puerta y sus dos habitaciones conectadas.
      */
     getLocationAt(worldX, worldY) {
         const tile = this.worldToTile(worldX, worldY);
@@ -202,8 +202,8 @@ export class ApartmentLayout {
     }
 
     /**
-     * World rectangle shown when a room is visible: the floor plus the
-     * surrounding walls (two tiles above, for the visible wall face).
+     * Rectangulo visible de una habitacion: piso y paredes circundantes, con dos tiles
+     * adicionales arriba para la cara visible de pared.
      */
     getRoomVisibleRect(roomId) {
         const room = this.getRoom(roomId);
@@ -218,7 +218,7 @@ export class ApartmentLayout {
         });
     }
 
-    /** Rooms directly connected to `roomId` through a door. */
+    /** Habitaciones conectadas directamente con roomId mediante una puerta. */
     getConnectedRooms(roomId) {
         const connected = new Set();
         for (const door of this.doors) {
@@ -230,8 +230,8 @@ export class ApartmentLayout {
     }
 
     /**
-     * Wall cells merged into rectangles (world pixels) so the collision system
-     * creates a few large static bodies instead of one per tile.
+     * Fusiona celdas de pared en rectangulos del mundo para crear menos cuerpos
+     * estaticos grandes en lugar de uno por tile.
      */
     getWallRectangles() {
         const rowRuns = [];
@@ -250,7 +250,7 @@ export class ApartmentLayout {
             }
         }
 
-        // Merge runs with the same horizontal extent on consecutive rows.
+        // Fusiona tramos con igual extension horizontal en filas consecutivas.
         const merged = [];
         for (const run of rowRuns) {
             const previous = merged.find((rect) => rect.x === run.x && rect.w === run.w && rect.y + rect.h === run.y);
@@ -264,7 +264,7 @@ export class ApartmentLayout {
         return merged.map((rect) => this.rectToWorld(rect));
     }
 
-    /** World size in pixels. */
+    /** Tamano total del mundo en pixeles. */
     getWorldSize() {
         return { width: this.width * this.tileSize, height: this.height * this.tileSize };
     }

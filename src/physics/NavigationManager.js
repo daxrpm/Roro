@@ -1,15 +1,15 @@
 /**
- * Grid-based navigation (A*) over the apartment walkability grid.
+ * Navegacion A* sobre la grilla transitable del departamento.
+ * ApartmentLayout.isWalkable excluye paredes, vacio y muebles solidos. Las puertas
+ * son transitables porque el detective las abre al llegar.
  *
- * - Tiles come from ApartmentLayout.isWalkable (walls, void and solid
- *   furniture are excluded). Door tiles are walkable: the detective opens
- *   closed doors when he reaches them.
- * - Movement is 8-directional, but diagonal steps are only allowed when both
- *   adjacent orthogonal tiles are free, so paths never cut wall corners.
- * - The resulting tile path is smoothed with a conservative line-of-sight
- *   check so the detective walks in straight lines where possible.
+ * Hay ocho direcciones; las diagonales exigen ambos vecinos ortogonales libres
+ * para no atravesar esquinas.
  *
- * This module has no Phaser dependency and is covered by `npm test`.
+ * La ruta se suaviza con una comprobacion conservadora de paso libre, permitiendo
+ * tramos rectos cuando es seguro.
+ *
+ * No depende de Phaser y se verifica con npm test.
  */
 
 const DIAGONAL_COST = Math.SQRT2;
@@ -25,7 +25,7 @@ const NEIGHBOURS = [
     { x: -1, y: -1, cost: DIAGONAL_COST }
 ];
 
-/** Binary min-heap keyed by `priority`, used as the A* open set. */
+/** Monticulo binario minimo por priority, usado como conjunto abierto de A*. */
 class MinHeap {
     constructor() {
         this.items = [];
@@ -73,13 +73,13 @@ export class NavigationManager {
     /**
      * @param {import('../world/ApartmentLayout.js').ApartmentLayout} layout
      * @param {object} [options]
-     * @param {number} [options.clearance] half-size (px) of the moving body,
-     *   used by path smoothing to keep a safe distance from obstacles.
+     * @param {number} [options.clearance] mitad del tamano del cuerpo movil en pixeles,
+     *   usada al suavizar rutas para mantener distancia segura de obstaculos.
      */
     constructor(layout, options = {}) {
         this.layout = layout;
         this.clearance = options.clearance ?? 10;
-        // Tiles that are temporarily unavailable (key "x,y").
+        // Tiles bloqueados temporalmente, identificados por la clave x,y.
         this.temporarilyBlocked = new Set();
     }
 
@@ -96,7 +96,7 @@ export class NavigationManager {
         return this.layout.isWalkable(x, y) && !this.temporarilyBlocked.has(`${x},${y}`);
     }
 
-    /** Returns the closest walkable tile to `tile` (breadth-first search). */
+    /** Devuelve el tile transitable mas cercano a tile mediante busqueda en anchura. */
     findNearestWalkable(tile, maxDistance = 6) {
         if (this.isWalkable(tile.x, tile.y)) {
             return { x: tile.x, y: tile.y };
@@ -125,8 +125,8 @@ export class NavigationManager {
     }
 
     /**
-     * A* search between two tiles.
-     * @returns {Array<{x:number,y:number}>|null} tile path including start and goal.
+     * Busqueda A* entre dos tiles.
+     * @returns {Array<{x:number,y:number}>|null} ruta de tiles que incluye inicio y destino.
      */
     findTilePath(startTile, goalTile) {
         const start = this.findNearestWalkable(startTile);
@@ -167,7 +167,7 @@ export class NavigationManager {
                 if (!this.isWalkable(nextX, nextY)) {
                     continue;
                 }
-                // Prevent cutting corners on diagonal moves.
+                // Impide atravesar esquinas al moverse en diagonal.
                 if (offset.x !== 0 && offset.y !== 0 &&
                     (!this.isWalkable(current.x + offset.x, current.y) || !this.isWalkable(current.x, current.y + offset.y))) {
                     continue;
@@ -196,9 +196,9 @@ export class NavigationManager {
     }
 
     /**
-     * World-space path (tile centres) from a world position to a world position.
-     * The first waypoint is the start position itself only if smoothing cannot
-     * skip it. Returns null when the destination is unreachable.
+     * Ruta entre posiciones del mundo usando centros de tiles. Conserva el inicio
+     * exacto como primer punto solo si el suavizado no puede omitirlo. Devuelve null
+     * si no se alcanza el destino.
      */
     findWorldPath(fromWorld, toWorld) {
         const startTile = this.layout.worldToTile(fromWorld.x, fromWorld.y);
@@ -209,13 +209,13 @@ export class NavigationManager {
         }
 
         const points = tilePath.map((tile) => this.layout.tileCenter(tile));
-        // Replace the first tile centre with the exact start position so the
-        // character does not walk back to the centre of its current tile.
+        // Reemplaza el primer centro de tile por la posicion inicial exacta para
+        // que el personaje no retroceda al centro de la celda donde ya se encuentra.
         points[0] = { x: fromWorld.x, y: fromWorld.y };
         return this.smoothPath(points);
     }
 
-    /** Removes intermediate waypoints that have a clear straight line. */
+    /** Quita puntos intermedios cuando existe un segmento recto libre. */
     smoothPath(points) {
         if (points.length <= 2) {
             return points.slice(1).length ? points.slice(1) : points;
@@ -238,7 +238,7 @@ export class NavigationManager {
         return result;
     }
 
-    /** Conservative check: the body's bounding box stays on walkable tiles. */
+    /** Comprobacion conservadora: las esquinas del cuerpo permanecen en tiles transitables. */
     hasClearLine(from, to) {
         const distance = Math.hypot(to.x - from.x, to.y - from.y);
         const steps = Math.max(1, Math.ceil(distance / 4));
@@ -257,7 +257,7 @@ export class NavigationManager {
         return true;
     }
 
-    /** True when `toTile` can be reached from `fromTile`. */
+    /** Devuelve true si puede llegarse a toTile desde fromTile. */
     isReachable(fromTile, toTile) {
         return this.findTilePath(fromTile, toTile) !== null;
     }

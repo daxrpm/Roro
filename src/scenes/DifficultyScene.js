@@ -7,7 +7,7 @@ import { Button, ButtonList } from '../ui/Button.js';
 import { TEXT_STYLES, textStyle } from '../ui/textStyles.js';
 import { fadeIn, fadeToScene } from './sceneTransitions.js';
 
-/** Lets the player choose Easy, Normal or Hard. Stored in GameSession. */
+/** Permite elegir Facil, Normal o Dificil; guarda la seleccion en GameSession. */
 export class DifficultyScene extends Phaser.Scene {
     constructor() {
         super(SCENE_KEYS.DIFFICULTY);
@@ -31,7 +31,7 @@ export class DifficultyScene extends Phaser.Scene {
         const back = new Button(this, GAME_WIDTH / 2, 170 + order.length * 56 + 10, t('Back'), () => fadeToScene(this, SCENE_KEYS.MAIN_MENU));
         const list = new ButtonList(this, [...buttons, back]);
 
-        // Show the description of the selected difficulty.
+        // Muestra la descripcion de la dificultad seleccionada.
         const originalSelect = list.select.bind(list);
         list.select = (index) => {
             originalSelect(index);

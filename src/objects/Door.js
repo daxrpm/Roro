@@ -4,17 +4,17 @@ import { AudioManager } from '../managers/AudioManager.js';
 import { InteractiveObject } from './InteractiveObject.js';
 
 /**
- * A door between two rooms.
+ * Puerta entre dos habitaciones.
+ * Cerrada, su cuerpo estatico de Arcade bloquea a ambos personajes. Roro abre o
+ * cierra puertas interiores con E; el detective las abre al llegar. No puede
+ * cerrarse con un personaje en el umbral.
  *
- * When closed, a static Arcade body blocks both characters. Roro can open or
- * close interior doors with E; the detective opens closed doors when his path
- * reaches them. A door cannot close while a character stands in the doorway.
- * The front door additionally has a permanent barrier that keeps Roro inside.
+ * La principal agrega una barrera permanente que mantiene a Roro dentro.
  */
 export class Door extends InteractiveObject {
     /**
      * @param {Phaser.Scene} scene
-     * @param {object} definition entry of DOORS (apartmentData.js)
+     * @param {object} definition entrada de DOORS (apartmentData.js)
      * @param {import('../world/ApartmentLayout.js').ApartmentLayout} layout
      * @param {import('../physics/CollisionManager.js').CollisionManager} collisions
      * @param {(rect:object) => boolean} isRectOccupied
@@ -24,7 +24,7 @@ export class Door extends InteractiveObject {
         super({
             id: definition.id,
             position: { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 },
-            // Doors are large, so the prompt is reachable from either side.
+            // El tamano de las puertas permite alcanzar su aviso desde ambos lados.
             range: Math.max(rect.width, rect.height) / 2 + 26
         });
         this.scene = scene;
@@ -74,7 +74,7 @@ export class Door extends InteractiveObject {
         return true;
     }
 
-    // ------------------------------------------------------------ interaction
+    // ------------------------------------------------------------ interaccion
 
     isAvailable() {
         return this.definition.playerCanUse;

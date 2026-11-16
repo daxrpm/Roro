@@ -1,9 +1,9 @@
 /**
- * Random helpers that accept an injectable random function so the logic can
- * be tested deterministically.
+ * Utilidades aleatorias que aceptan una funcion random inyectable para probar la
+ * logica de forma determinista.
  */
 
-/** Returns a new array with the elements shuffled (Fisher-Yates). */
+/** Devuelve un array nuevo barajado mediante Fisher Yates. */
 export function shuffle(items, random = Math.random) {
     const result = [...items];
     for (let index = result.length - 1; index > 0; index--) {
@@ -13,7 +13,7 @@ export function shuffle(items, random = Math.random) {
     return result;
 }
 
-/** Picks `count` distinct elements. */
+/** Selecciona count elementos distintos. */
 export function pickDistinct(items, count, random = Math.random) {
     if (count > items.length) {
         throw new Error(`Cannot pick ${count} items from a list of ${items.length}.`);
@@ -21,7 +21,7 @@ export function pickDistinct(items, count, random = Math.random) {
     return shuffle(items, random).slice(0, count);
 }
 
-/** Small seeded generator (mulberry32) for reproducible tests. */
+/** Generador mulberry32 con semilla para pruebas reproducibles. */
 export function createSeededRandom(seed) {
     let state = seed >>> 0;
     return function seededRandom() {

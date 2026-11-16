@@ -2,9 +2,9 @@ import { PLAYER_CONFIG } from '../data/gameConfig.js';
 import { Character } from './Character.js';
 
 /**
- * The player character. Movement comes from the InputManager (keyboard or
- * touch), is normalised so diagonals are not faster, and is resolved by
- * Arcade Physics against walls, furniture and closed doors.
+ * Personaje controlado por el jugador. InputManager aporta movimiento de teclado o
+ * tactil, normalizado para no acelerar en diagonal. Arcade Physics resuelve
+ * contactos con paredes, muebles y puertas cerradas.
  */
 export class Roro extends Character {
     constructor(scene, footPosition, controls) {
@@ -22,14 +22,14 @@ export class Roro extends Character {
         }
     }
 
-    /** Shows the carried evidence above Roro's head (null hides it). */
+    /** Muestra la evidencia llevada sobre la cabeza de Roro; null la oculta. */
     setCarriedTexture(textureKey) {
         if (!textureKey) {
             this.carryIcon.setVisible(false);
             return;
         }
         this.carryIcon.setTexture(textureKey).setVisible(true);
-        // Large objects are shown smaller above the head.
+        // Los objetos grandes se reducen al mostrarse sobre la cabeza.
         const scale = Math.min(1, 20 / this.carryIcon.height, 30 / this.carryIcon.width);
         this.carryIcon.setScale(scale);
     }

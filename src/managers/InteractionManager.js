@@ -1,16 +1,16 @@
 import { PLAYER_CONFIG } from '../data/gameConfig.js';
 
 /**
- * Finds the interactive object Roro can use and triggers it.
+ * Selecciona y activa el objeto con el que Roro puede interactuar.
+ * En cada cuadro:
+ * 1. Reune objetos disponibles con un punto de interaccion dentro del rango.
+ * 2. Conserva el mas cercano; Roro no interactua con dos a la vez.
  *
- * Every frame:
- * 1. Collect available objects whose interaction point is within range.
- * 2. Keep only the closest one (Roro never interacts with two at once).
- * 3. Show its prompt; pressing E calls its `interact` method.
+ * 3. Muestra su aviso y llama interact al pulsar E.
  */
 export class InteractionManager {
     /**
-     * @param {object} context services passed to interactive objects
+     * @param {object} context servicios entregados a los objetos interactivos
      * @param {import('../ui/InteractionPrompt.js').InteractionPrompt} prompt
      */
     constructor(context, prompt) {

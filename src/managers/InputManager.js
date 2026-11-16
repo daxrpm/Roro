@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 
 /**
- * Gameplay input for one scene. Combines the keyboard (WASD / arrows, E,
- * ESC) with the optional on-screen touch controls into a single interface,
- * so Roro does not need to know where the input comes from.
+ * Entrada de una escena de juego. Combina teclado (WASD, flechas, E y ESC) y
+ * controles tactiles opcionales mediante una interfaz comun; Roro no necesita
+ * conocer el origen de la entrada.
  */
 export class InputManager {
     constructor(scene) {
@@ -22,7 +22,7 @@ export class InputManager {
             interact: codes.E,
             pause: codes.ESC
         });
-        // Touch state is written by TouchControls.
+        // TouchControls escribe el estado de la entrada tactil.
         this.touch = { up: false, down: false, left: false, right: false };
         this.touchInteractQueued = false;
         this.touchPauseQueued = false;
@@ -30,7 +30,7 @@ export class InputManager {
         this.vector = { x: 0, y: 0 };
     }
 
-    /** Normalised movement vector: diagonal movement is not faster. */
+    /** Vector normalizado: moverse en diagonal no aumenta la rapidez. */
     getMovementVector() {
         if (!this.enabled) {
             this.vector.x = 0;
@@ -48,7 +48,7 @@ export class InputManager {
         return this.vector;
     }
 
-    /** True once per press of E (or the touch interact button). */
+    /** Devuelve true una vez por pulsacion de E o del boton tactil de interaccion. */
     consumeInteract() {
         const pressed = Phaser.Input.Keyboard.JustDown(this.keys.interact) || this.touchInteractQueued;
         this.touchInteractQueued = false;
@@ -65,7 +65,7 @@ export class InputManager {
         this.enabled = enabled;
     }
 
-    /** Clears held keys, e.g. when returning from a pause or dialogue. */
+    /** Limpia teclas mantenidas, por ejemplo al regresar de pausa o dialogo. */
     reset() {
         Object.values(this.keys).forEach((key) => key.reset());
         this.touch.up = this.touch.down = this.touch.left = this.touch.right = false;

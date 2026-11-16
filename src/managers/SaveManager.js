@@ -1,21 +1,21 @@
 import { AUDIO_DEFAULTS, DEFAULT_DIFFICULTY, DIFFICULTY, STORAGE_KEY } from '../data/gameConfig.js';
 
 /**
- * localStorage persistence.
+ * Persistencia mediante localStorage.
  *
- * Only long-lived data is stored: high scores, the level reached, the last
- * difficulty and the audio settings. The state of a game in progress is
- * never saved, so a restart always begins from a clean apartment.
+ * Solo guarda datos duraderos: records, nivel alcanzado, ultima dificultad y
+ * audio. No conserva partidas en curso; reiniciar crea un departamento limpio.
  *
- * Every access is wrapped in try/catch: storage can be unavailable (private
- * mode, blocked cookies) and the game must still work without it.
+ * Todos los accesos usan try/catch porque el almacenamiento puede estar bloqueado
+ * o no disponible. El juego sigue funcionando sin el.
+ *
  */
 function createDefaultData() {
     return {
         version: 1,
         highScore: 0,
         highScoreByDifficulty: { [DIFFICULTY.EASY]: 0, [DIFFICULTY.NORMAL]: 0, [DIFFICULTY.HARD]: 0 },
-        // The game has a single level. 1 = apartment unlocked, 2 = apartment completed.
+        // El juego tiene un nivel: 1 = departamento desbloqueado; 2 = completado.
         levelReached: 1,
         gamesPlayed: 0,
         gamesWon: 0,
@@ -79,8 +79,8 @@ class SaveManagerClass {
     }
 
     /**
-     * Records a finished game. High scores only count games won, because a
-     * score is only meaningful if the detective left without catching Roro.
+     * Registra una partida terminada. Los records solo cuentan victorias, porque el
+     * puntaje se valida cuando el detective se va sin resolver el caso.
      * @returns {{ newHighScore: boolean }}
      */
     recordResult({ score, difficulty, won }) {

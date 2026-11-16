@@ -5,8 +5,8 @@ import { AssetManager } from '../managers/AssetManager.js';
 import { AudioManager } from '../managers/AudioManager.js';
 
 /**
- * Loads every asset declared in assetManifest.js with Phaser's loader,
- * shows a progress bar, then prepares textures and animations.
+ * Carga los recursos de assetManifest.js con Phaser, muestra el progreso y despues
+ * prepara texturas y animaciones.
  */
 export class PreloadScene extends Phaser.Scene {
     constructor() {

@@ -4,24 +4,24 @@ import { EVIDENCE_STATE } from '../data/evidenceData.js';
 import { InteractiveObject } from './InteractiveObject.js';
 
 /**
- * Visual and interactive representation of one evidence object lying in the
- * apartment. Its state is owned by EvidenceManager; this class only shows or
- * hides the sprite and forwards interactions.
+ * Representacion visual e interactiva de una evidencia en el departamento.
+ * EvidenceManager controla el estado; esta clase muestra u oculta el sprite y
+ * delega las interacciones.
  *
- * The victim's note is readable: the first interaction opens the note
- * interface, the next one picks it up.
+ * La primera interaccion con la nota la abre para leer; la siguiente la recoge.
+ *
  */
 export class EvidenceItem extends InteractiveObject {
     /**
      * @param {Phaser.Scene} scene
-     * @param {object} record evidence record from EvidenceManager
-     * @param {{x:number,y:number}} position world position (centre)
+     * @param {object} record registro de evidencia de EvidenceManager
+     * @param {{x:number,y:number}} position posicion del mundo en el centro
      */
     constructor(scene, record, position) {
         super({ id: record.id, position });
         this.record = record;
         this.definition = record.definition;
-        // Objects lie on the floor: the sprite's bottom sits slightly below the centre.
+        // Objetos sobre el suelo: la base del sprite queda un poco debajo del centro.
         this.sprite = scene.add.image(Math.round(position.x), Math.round(position.y + 6), this.definition.textureKey)
             .setOrigin(0.5, 1)
             .setDepth(DEPTH.worldBase + position.y);
@@ -60,7 +60,7 @@ export class EvidenceItem extends InteractiveObject {
         context.onEvidenceAction?.(result, this);
     }
 
-    /** Called when the evidence state changes. */
+    /** Se llama al cambiar el estado de la evidencia. */
     syncVisibility() {
         const visible = this.record.state === EVIDENCE_STATE.NOT_FOUND;
         this.sprite.setVisible(visible);

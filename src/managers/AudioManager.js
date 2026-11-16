@@ -4,14 +4,14 @@ import { SaveManager } from './SaveManager.js';
 const AUDIO_TYPES_BY_KEY = new Map(AUDIO_ASSETS.map((asset) => [asset.key, asset.type]));
 
 /**
- * Central audio service, independent from gameplay logic.
+ * Servicio central de audio, independiente de las reglas de juego.
  *
- * - Uses the game-wide Phaser sound manager, so music survives scene changes.
- * - Every play request first checks that the file was actually loaded. Audio
- *   files may be unavailable; missing sounds are skipped silently, so the
- *   game runs without errors and the real files can be dropped in later at
- *   the paths declared in assetManifest.js.
- * - Settings (mute, volumes) are persisted through SaveManager.
+ * Usa el gestor de sonido global de Phaser: la musica continua entre escenas.
+ *
+ * Antes de reproducir comprueba que el archivo este cargado. Los sonidos ausentes
+ * se omiten; luego pueden agregarse en las rutas de assetManifest.js.
+ *
+ * SaveManager conserva silencio y volumenes entre sesiones.
  */
 class AudioManagerClass {
     constructor() {
@@ -37,7 +37,7 @@ class AudioManagerClass {
         return available;
     }
 
-    // ------------------------------------------------------------------ music
+    // ------------------------------------------------------------------ musica
 
     playMusic(key, { loop = true, rate = key === 'music-rest' ? 0.75 : 1 } = {}) {
         if (this.currentMusicKey === key && this.currentMusic?.isPlaying) {
@@ -71,14 +71,14 @@ class AudioManagerClass {
         this.currentMusicKey = null;
     }
 
-    // --------------------------------------------------------------- effects
+    // --------------------------------------------------------------- efectos
 
     /**
-     * Plays a one-shot sound effect.
+     * Reproduce un efecto sonoro una sola vez.
      * @param {string} key
      * @param {object} [options]
-     * @param {number} [options.volume] 0..1 multiplier of the SFX volume
-     * @param {number} [options.pan] -1 (left) .. 1 (right), WebAudio only
+     * @param {number} [options.volume] multiplicador de volumen de efectos entre 0 y 1
+     * @param {number} [options.pan] -1 (izquierda) a 1 (derecha), solo WebAudio
      * @param {number} [options.detune]
      */
     playSfx(key, { volume = 1, pan = 0, detune = 0 } = {}) {
@@ -86,7 +86,7 @@ class AudioManagerClass {
             return;
         }
         try {
-            // `pan` is honoured by the WebAudio sound manager and ignored by HTML5 audio.
+            // WebAudio aplica pan; el audio HTML5 ignora ese parametro.
             this.game.sound.play(key, {
                 volume: Math.max(0, Math.min(1, volume * this.settings.sfxVolume)),
                 detune,
@@ -98,9 +98,9 @@ class AudioManagerClass {
     }
 
     /**
-     * Plays a footstep heard from `listener`. Volume falls off with distance
-     * and the sound is panned left/right, so the player can locate the
-     * detective by ear in Normal and Hard modes.
+     * Reproduce un paso escuchado desde listener. El volumen disminuye con la
+     * distancia y la panoramica lo situa a izquierda o derecha para localizar al
+     * detective por sonido en Normal y Dificil.
      */
     playPositionalSfx(key, source, listener, hearingDistance) {
         const dx = source.x - listener.x;
@@ -112,7 +112,7 @@ class AudioManagerClass {
         this.playSfx(key, { volume, pan: dx / (hearingDistance * 0.6), detune: (Math.random() - 0.5) * 100 });
     }
 
-    // -------------------------------------------------------------- settings
+    // -------------------------------------------------------------- ajustes
 
     getSettings() {
         return { ...this.settings };
@@ -133,7 +133,7 @@ class AudioManagerClass {
         return this.settings.muted;
     }
 
-    /** One control for effects and music; retain the softer music balance. */
+    /** Un control para efectos y musica que conserva la musica mas suave. */
     setVolume(volume) {
         const level = Math.max(0, Math.min(1, volume));
         this.settings.sfxVolume = level;
@@ -166,7 +166,7 @@ class AudioManagerClass {
         this.listeners.forEach((listener) => listener(this.getSettings()));
     }
 
-    /** Subscribe to settings changes (used by mute buttons). Returns an unsubscribe function. */
+    /** Suscribe cambios de ajustes; devuelve una funcion para cancelar la suscripcion. */
     onChange(listener) {
         this.listeners.add(listener);
         return () => this.listeners.delete(listener);

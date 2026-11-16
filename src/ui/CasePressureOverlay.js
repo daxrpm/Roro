@@ -1,6 +1,6 @@
 import { DEPTH, GAME_WIDTH, GAME_HEIGHT } from '../data/gameConfig.js';
 
-/** Red vignette over the world, below prompts/HUD; no interactive input surface. */
+/** Borde rojo sobre el mundo y debajo de avisos y HUD; no captura entrada. */
 export class CasePressureOverlay {
     constructor(scene) {
         this.scene = scene;
@@ -16,7 +16,7 @@ export class CasePressureOverlay {
     setIntensity(intensity) {
         this.tint.setAlpha(intensity * 0.10);
         this.frame.clear();
-        // Nested bands fade softly toward the center, leaving play space readable.
+        // Las bandas pierden opacidad hacia el centro para mantener legible el juego.
         for (let band = 0; band < 20; band++) {
             const inset = band * 4;
             this.frame.fillStyle(0xa00000, intensity * 0.38 * (1 - band / 20));

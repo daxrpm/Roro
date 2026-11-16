@@ -7,12 +7,12 @@ export const CHARACTER_EVENTS = Object.freeze({
 });
 
 /**
- * Base class for Roro and the detective: a physics sprite with a small body
- * at the feet, three visual orientations (front, back, side) and footsteps.
+ * Clase base de Roro y detective: sprite fisico con cuerpo pequeno en los pies,
+ * tres orientaciones (frente, espalda y lateral) y pasos.
  *
- * Position convention: the sprite origin is at the bottom-centre (the feet).
- * `getFootPosition()` returns the centre of the physics body, which is the
- * point used for navigation, interaction distances and room detection.
+ * El origen del sprite esta en el centro inferior. getFootPosition() devuelve el
+ * centro del cuerpo fisico, usado para navegar, medir distancias y detectar
+ * habitaciones.
  */
 export class Character extends Phaser.Physics.Arcade.Sprite {
     /**
@@ -33,8 +33,8 @@ export class Character extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.setOrigin(0.5, 1);
-        // All frames of a character share one size (see AssetManager), so the
-        // body offset computed once stays aligned with the feet.
+        // Todos los cuadros tienen el mismo tamano (AssetManager), por lo que
+        // el desplazamiento del cuerpo se calcula una vez y queda alineado con los pies.
         this.body.setSize(config.bodyWidth, config.bodyHeight);
         this.body.setOffset((this.width - config.bodyWidth) / 2, this.height - config.bodyHeight);
         this.updateDepth();
@@ -47,10 +47,10 @@ export class Character extends Phaser.Physics.Arcade.Sprite {
     }
 
     /**
-     * Places the character so that its feet are centred on a world point.
+     * Coloca al personaje con los pies centrados en un punto del mundo.
      *
-     * Note: Arcade's `body.reset()` is not used because it aligns the body
-     * with the sprite's top-left corner and ignores the feet offset.
+     * No usa body.reset() de Arcade porque alinea el cuerpo con la esquina superior
+     * izquierda del sprite e ignora el desplazamiento de los pies.
      */
     placeAtFoot(position) {
         this.setPosition(position.x, position.y + this.config.bodyHeight / 2);
@@ -63,9 +63,9 @@ export class Character extends Phaser.Physics.Arcade.Sprite {
     }
 
     /**
-     * Chooses the orientation and animation from a velocity.
-     * The dominant axis decides the direction; when both axes are equal
-     * (diagonal), the current orientation is kept to avoid flickering.
+     * Elige orientacion y animacion desde la velocidad. El eje dominante determina la
+     * direccion; con ejes iguales conserva orientacion para evitar oscilaciones
+     * visuales en diagonales.
      */
     updateAnimation(velocityX, velocityY) {
         const moving = Math.abs(velocityX) > 0.5 || Math.abs(velocityY) > 0.5;
@@ -94,7 +94,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite {
     setFacing(direction, horizontalHint = 0) {
         this.facing = direction;
         if (direction === DIRECTION.SIDE && horizontalHint !== 0) {
-            // The side frames face right; left reuses them mirrored.
+            // Los cuadros laterales miran a la derecha; para la izquierda se reflejan.
             this.setFlipX(horizontalHint < 0);
         } else if (direction !== DIRECTION.SIDE) {
             this.setFlipX(false);
@@ -106,7 +106,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite {
         this.setTexture(idleTextureKey(this.characterKey, this.facing));
     }
 
-    /** Turns to look at a world point while standing still. */
+    /** Mira hacia un punto del mundo sin desplazarse. */
     faceTowards(target) {
         const foot = this.getFootPosition();
         const dx = target.x - foot.x;
@@ -120,7 +120,7 @@ export class Character extends Phaser.Physics.Arcade.Sprite {
         this.isWalking = false;
     }
 
-    /** Emits FOOTSTEP at a regular interval while walking. */
+    /** Emite FOOTSTEP a intervalos regulares mientras camina. */
     updateFootsteps(delta) {
         if (!this.isWalking) {
             this.footstepTimer = this.config.footstepInterval * 0.5;

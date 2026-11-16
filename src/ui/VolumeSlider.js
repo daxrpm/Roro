@@ -4,7 +4,7 @@ import { AudioManager } from '../managers/AudioManager.js';
 import { t } from '../managers/LanguageManager.js';
 import { textStyle } from './textStyles.js';
 
-/** Menu volume control: click, drag, touch, or use Left / Right. */
+/** Volumen del menu de pausa mediante clic, arrastre, tactil o flechas izquierda y derecha. */
 export class VolumeSlider extends Phaser.GameObjects.Container {
     constructor(scene, x, y) {
         super(scene, x, y);

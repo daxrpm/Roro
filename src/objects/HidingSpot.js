@@ -2,16 +2,16 @@ import { t } from '../managers/LanguageManager.js';
 import { InteractiveObject } from './InteractiveObject.js';
 
 /**
- * A predefined place where Roro can hide one evidence object.
+ * Lugar predefinido para esconder una evidencia.
  *
- * The hiding place stores evidence ids; the EvidenceManager is the single
- * authority that changes evidence states and the score. The detective
- * searches the spot when his inspection route reaches its `inspectTile`.
+ * Guarda identificadores de objetos. EvidenceManager es la autoridad sobre estados
+ * y puntaje. El detective inspecciona el lugar al llegar al inspectTile de su
+ * ruta.
  */
 export class HidingSpot extends InteractiveObject {
     /**
-     * @param {object} definition entry of HIDING_SPOTS (apartmentData.js)
-     * @param {object} world positions converted to world pixels
+     * @param {object} definition entrada de HIDING_SPOTS (apartmentData.js)
+     * @param {object} world posiciones convertidas a pixeles del mundo
      * @param {{x:number,y:number}} world.position
      * @param {{x:number,y:number}} world.inspectPosition
      * @param {number} capacity
@@ -58,10 +58,10 @@ export class HidingSpot extends InteractiveObject {
         this.inspected = true;
     }
 
-    // ------------------------------------------------------------ interaction
+    // ------------------------------------------------------------ interaccion
 
     isAvailable({ evidence }) {
-        // Shown when Roro carries something, or when something can be retrieved.
+        // Se muestra cuando Roro lleva algo o cuando existe un objeto recuperable.
         return evidence.getCarriedItem() !== null || (this.isOccupied() && evidence.rules.allowRetrieval);
     }
 

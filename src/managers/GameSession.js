@@ -2,9 +2,9 @@ import { DIFFICULTY_SETTINGS } from '../data/gameConfig.js';
 import { SaveManager } from './SaveManager.js';
 
 /**
- * State shared between scenes for the current play session: the selected
- * difficulty and the result of the last game. Persistent data lives in
- * SaveManager; this object only lives while the page is open.
+ * Estado compartido entre escenas durante la sesion: dificultad seleccionada y
+ * ultimo resultado. Los datos persistentes viven en SaveManager; esta instancia
+ * dura mientras la pagina esta abierta.
  */
 class GameSessionClass {
     constructor() {
@@ -24,7 +24,7 @@ class GameSessionClass {
         return DIFFICULTY_SETTINGS[this.difficulty];
     }
 
-    /** Stores the outcome of a finished game and updates persistent records. */
+    /** Guarda el resultado de una partida terminada y actualiza records persistentes. */
     finishGame({ won, score, maxScore, caseProgress, reason = null }) {
         const { newHighScore } = SaveManager.recordResult({ score, difficulty: this.difficulty, won });
         this.lastResult = {

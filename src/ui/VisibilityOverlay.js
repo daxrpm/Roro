@@ -3,24 +3,24 @@ import { COLORS, DEPTH, GAME_HEIGHT, GAME_WIDTH, VISIBILITY_MODE } from '../data
 const LIGHT_TEXTURE_KEY = 'visibility-light';
 
 /**
- * Darkness overlay that implements the difficulty visibility rules,
- * independently of how the apartment is drawn.
+ * Capa de oscuridad segun dificultad, independiente del dibujo del departamento.
  *
- * - FULL (Easy): no overlay.
- * - ROOM (Normal): everything is darkened except the room Roro is in
- *   (both rooms while standing in a doorway).
- * - RADIUS (Hard): everything is darkened except a soft circle around Roro.
+ * FULL (Facil): sin capa.
  *
- * A camera-sized RenderTexture is filled with darkness every frame, then the
- * visible area is erased from it. The overlay is not interactive, so it never
- * blocks input. The detective is hidden separately when he is outside the
- * visible area (see `isPointVisible`).
+ * ROOM (Normal): revela la habitacion de Roro, o ambas cuando esta en una puerta.
+ *
+ * RADIUS (Dificil): revela un circulo suave alrededor de Roro.
+ *
+ * Cada cuadro rellena de oscuridad una RenderTexture del tamano de pantalla y
+ * borra las zonas visibles. No captura entrada. El detective se oculta por
+ * separado cuando queda fuera de vista; ver isPointVisible.
+ *
  */
 export class VisibilityOverlay {
     /**
      * @param {Phaser.Scene} scene
      * @param {import('../world/ApartmentLayout.js').ApartmentLayout} layout
-     * @param {object} settings DIFFICULTY_SETTINGS entry
+     * @param {object} settings entrada de DIFFICULTY_SETTINGS
      */
     constructor(scene, layout, settings) {
         this.scene = scene;
@@ -46,7 +46,7 @@ export class VisibilityOverlay {
         }
     }
 
-    /** Radial gradient used to erase a soft-edged circle. */
+    /** Gradiente radial para borrar un circulo de borde suave. */
     createLightTexture(radius) {
         const { textures } = this.scene;
         if (textures.exists(LIGHT_TEXTURE_KEY)) {
@@ -64,14 +64,14 @@ export class VisibilityOverlay {
     }
 
     /**
-     * @param {{x:number,y:number}} playerPosition Roro's feet (world)
-     * @param {{rooms:string[]}} playerLocation from RoomTriggerSystem
+     * @param {{x:number,y:number}} playerPosition pies de Roro en coordenadas del mundo
+     * @param {{rooms:string[]}} playerLocation obtenida de RoomTriggerSystem
      */
     update(playerPosition, playerLocation) {
         if (this.mode === VISIBILITY_MODE.FULL) {
             return;
         }
-        // Centre of the visible circle: a little above the feet (Roro's body).
+        // Centro de vision un poco por encima de los pies, sobre el cuerpo de Roro.
         this.center.x = playerPosition.x;
         this.center.y = playerPosition.y - 18;
 
@@ -100,7 +100,7 @@ export class VisibilityOverlay {
         }
     }
 
-    /** Whether a world point is currently visible to the player. */
+    /** Indica si un punto del mundo es visible para el jugador en este momento. */
     isPointVisible(point) {
         switch (this.mode) {
             case VISIBILITY_MODE.FULL:
@@ -113,7 +113,7 @@ export class VisibilityOverlay {
         }
     }
 
-    /** Fades the darkness away (used at the end of the game). */
+    /** Desvanece la oscuridad al terminar la partida. */
     reveal() {
         if (this.texture) {
             this.mode = VISIBILITY_MODE.FULL;

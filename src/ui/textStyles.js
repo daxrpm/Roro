@@ -1,8 +1,8 @@
 import { COLORS, FONT_FAMILY } from '../data/gameConfig.js';
 
 /**
- * Shared text styles. The m6x11 pixel font is designed for multiples of
- * 16px, which keeps its pixels sharp.
+ * Estilos de texto compartidos. La fuente pixelada m6x11 esta pensada para
+ * multiplos de 16 px, lo que conserva su nitidez.
  */
 export function textStyle(overrides = {}) {
     return {

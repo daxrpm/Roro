@@ -1,20 +1,20 @@
 /**
- * Asset manifest: the single place where asset keys, file paths and
- * processing options are declared.
+ * Catalogo central de claves, rutas y opciones de procesamiento de recursos.
+ * Las rutas son relativas a public/, servido por Vite desde la raiz. Este modulo
+ * solo declara datos y tambien puede importarse desde scripts de Node, como
+ * scripts/check-assets.mjs.
+ * Categorias:
+ * REQUIRED: imagenes necesarias para la apariencia prevista del juego.
  *
- * Paths are relative to the `public/` directory (Vite serves it at the root).
- * This module is pure data so it can also be imported by Node scripts
- * (see scripts/check-assets.mjs).
+ * OPTIONAL: imagenes que admiten una figura provisional o textura de respaldo
+ * hasta agregar el archivo en path.
  *
- * Asset categories:
- * - REQUIRED images: the game cannot look right without them. They exist today.
- * - OPTIONAL images: not available yet. A programmatic placeholder (or a
- *   fallback texture) is used until the real file is added at `path`.
- * - AUDIO: not available yet. Missing audio is skipped silently.
+ * AUDIO: sonidos declarados; si alguno falta, su reproduccion se omite sin
+ * interrumpir la partida.
  */
 
-// Colours of the opaque background baked into the cropped character and object
-// PNGs. They are removed at load time (the files on disk are not modified).
+// Colores del fondo opaco incluido en los PNG recortados de personajes
+// y objetos. Se eliminan al cargar, sin modificar los archivos del disco.
 const CROPPED_BACKGROUND_COLORS = [
     [34, 34, 38],
     [46, 46, 50],
@@ -25,17 +25,17 @@ const CHARACTER_DIRECTIONS = ['front', 'back', 'side'];
 const WALK_FRAME_COUNT = 3;
 
 /**
- * Builds the frame list for a character stored as:
- *   characters/<name>/idle/<dir>.png
- *   characters/<name>/walk/<dir>/<dir>_walk00<n>.png
+ * Construye la lista de cuadros de un personaje almacenado en:
+ * characters/<name>/idle/<dir>.png
+ * characters/<name>/walk/<dir>/<dir>_walk00<n>.png
  */
 function characterFrames(name) {
     const processing = {
         removeBackground: CROPPED_BACKGROUND_COLORS,
-        // Source images are upscaled 3x; the world uses 2x.
+        // Las imagenes originales estan ampliadas por 3; el mundo usa escala 2.
         scale: 2 / 3,
-        // All frames of the same character share one canvas size so the
-        // physics body stays aligned with the feet in every frame.
+        // Todos los cuadros de un personaje comparten el mismo tamano de lienzo
+        // para mantener el cuerpo fisico alineado con los pies en cada cuadro.
         normalizeGroup: name
     };
     const frames = [];
@@ -93,8 +93,8 @@ export const REQUIRED_IMAGES = [
 ];
 
 /**
- * Images that are not available yet. `placeholder` describes the programmatic
- * stand-in (world pixels). `fallbackTexture` reuses an existing texture instead.
+ * Imagenes opcionales con respaldo. placeholder describe la figura provisional en
+ * pixeles del mundo; fallbackTexture reutiliza una textura existente.
  */
 export const OPTIONAL_IMAGES = [
     {
